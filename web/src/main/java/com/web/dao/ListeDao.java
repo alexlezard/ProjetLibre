@@ -1,6 +1,6 @@
 package com.web.dao;
 
-public class UserDao implements InterfaceDao{
+public class ListeDao implements InterfaceDao{
 
 	@Override
 	public String create() {
@@ -23,14 +23,6 @@ public class UserDao implements InterfaceDao{
 	@Override
 	public String findById() {
 		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public String login(){
-		return null;
-	}
-	
-	public String logout(){
 		return null;
 	}
 

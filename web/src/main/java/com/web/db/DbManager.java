@@ -27,6 +27,13 @@ public class DbManager {
 	public String 				arrayContent[][];
 	public String 				arrayHeader[];
 	public String 				strConnectURL;
+	public static DbManager			dbmanager;
+	
+	public static synchronized DbManager getInstance( ) {
+		 if (dbmanager == null)
+			 dbmanager = new DbManager();
+		 return dbmanager;
+	}
 	
 	public void dbConnect(String sql)
 	{

@@ -3,10 +3,10 @@ import com.web.db.DbManager;
 public class test {
 	
 	   public static void main (String[] args){
-		    System.out.println("Dbmanager");
+		    System.out.println("Dbmanager ------>");
 		    
-		    DbManager dbman = new DbManager();
-		    dbman.dbConnect("SELECT * FROM projetlibre.user;");
+		   
+		    DbManager.getInstance().dbConnect("SELECT * FROM projetlibre.user;");
 		}
 	   
 }
