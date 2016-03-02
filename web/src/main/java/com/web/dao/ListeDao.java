@@ -3,7 +3,7 @@ package com.web.dao;
 public class ListeDao implements InterfaceDao{
 
 	@Override
-	public String create() {
+	public String insert() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -29,28 +29,46 @@ public class DbManager {
 	public String 				strConnectURL;
 	public static DbManager			dbmanager;
 	
+	private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
+	private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/projetlibre";
+	private static final String DB_USER = "root";
+	private static final String DB_PASSWORD = "";
+	
 	public static synchronized DbManager getInstance( ) {
 		 if (dbmanager == null)
 			 dbmanager = new DbManager();
 		 return dbmanager;
 	}
 	
-	public void dbConnect(String sql)
-	{
-		try
-		{	
+	private static Connection getDBConnection() {
+		Connection dbConnection = null;
+
+		try 
+		{
 			//1ere etape: Chargement de la classe de driver, responsable - par contrat d'interfaces - de la connection vers le SGBD
 			//Il existe 4 types de driver (I, II, III, IV): 2 locaux, et 2 remote. More infos: http://java.sun.com/jdbc/drivers.html
  			//Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-			Class.forName("com.mysql.jdbc.Driver");
-			
- 			//2eme etape: Definition de l'URL de connection
- 			//strConnectURL				= "jdbc:odbc:java";
-			strConnectURL				= "jdbc:mysql://localhost:3306/projetlibre"; // projetlibre est le nom de la base
- 			//ex d'URL permettant le connection distante: "jdbc:JDataConnect://www.domain.com/db-dsn"; 
- 			
+			Class.forName(DB_DRIVER);
+		} catch (ClassNotFoundException e) { System.out.println(e.getMessage()); }
+
+		try 
+		{
+			dbConnection = DriverManager.getConnection(DB_CONNECTION, DB_USER,DB_PASSWORD);
+			return dbConnection;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+		return dbConnection;
+
+	}
+	
+	public void dbExecute(String sql)
+	{
+		try
+		{	
  			//3eme etape: Creation de l'object de connection
-			myConnect 					= DriverManager.getConnection(strConnectURL, "root", "");//login & password
+			myConnect 					= getDBConnection();
 		
 			//Option: Acces a un jeu de meta information sur la base avec laquelle on dialogue.
 			myDbMetaData 				= myConnect.getMetaData();
@@ -124,7 +142,6 @@ public class DbManager {
 			//myPreparedStatement.executeUpdate();
 			//myPreparedStatement.executeQuery();	
 		}
-		catch (ClassNotFoundException e) 	{System.out.println("dbConnect ClassNotFoundException: " + e.toString()); e.printStackTrace();}	
 		catch (SQLException e) 				{System.out.println("dbConnect SQLException: " + e.toString()); e.printStackTrace();}	
 		catch (Exception e) 					{System.out.println("dbConnect Exception: " + e.toString()); 	e.printStackTrace();}	
 		finally
@@ -137,6 +154,10 @@ public class DbManager {
 			catch (java.sql.SQLException e)	{System.out.println("dbDisconnect: close statement: " + e.toString());}
 			catch (Exception e)	{System.out.println("dbDisconnect: close connection: " + e.toString());}		
 		}
+	}
+	
+	public void executeSelect(){
+		
 	}
 	
 }

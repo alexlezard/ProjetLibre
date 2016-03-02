@@ -1,0 +1,7 @@
+
+	- [FEATURE] Login : 
+	 recuperer json depuis le client exemple : {email:"toto@toto.com",mdp:"azeert123"}
+	 la fonction "login" renvoie JSON avec nom , email, id  
+	 en option : avec un token, date d'expiration du token
+	 le mot de passe est hash (voir SHA1) : trouver une lib java pour checker si la valeur mdp hashé (base de donnée) == au mdp en clair (client)
+	 

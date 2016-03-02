@@ -6,7 +6,7 @@ public class test {
 		    System.out.println("Dbmanager ------>");
 		    
 		   
-		    DbManager.getInstance().dbConnect("SELECT * FROM projetlibre.user;");
+		    DbManager.getInstance().dbExecute("SELECT * FROM projetlibre.user;");
 		}
 	   
 }

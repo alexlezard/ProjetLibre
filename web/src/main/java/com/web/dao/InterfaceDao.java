@@ -2,7 +2,7 @@ package com.web.dao;
 
 public interface InterfaceDao {
 	
-	public String create();
+	public String insert();
 	
 	public String remove();
 	
