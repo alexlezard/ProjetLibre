@@ -8,5 +8,5 @@ public interface InterfaceDao {
 	
 	public String update();
 	
-	public String findById();
+	public String findById(Object obj);
 }

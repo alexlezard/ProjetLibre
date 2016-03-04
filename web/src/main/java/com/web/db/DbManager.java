@@ -11,6 +11,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.web.model.User;
+
 public class DbManager {
 	
 	//Objects spécifiques aux differents appels vers les bases (locales ou distantes).	
@@ -40,19 +42,16 @@ public class DbManager {
 		 return dbmanager;
 	}
 	
-	private static Connection getDBConnection() {
+	public static Connection getDBConnection() {
 		Connection dbConnection = null;
-
-		try 
-		{
+		try {
 			//1ere etape: Chargement de la classe de driver, responsable - par contrat d'interfaces - de la connection vers le SGBD
 			//Il existe 4 types de driver (I, II, III, IV): 2 locaux, et 2 remote. More infos: http://java.sun.com/jdbc/drivers.html
  			//Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 			Class.forName(DB_DRIVER);
 		} catch (ClassNotFoundException e) { System.out.println(e.getMessage()); }
 
-		try 
-		{
+		try {
 			dbConnection = DriverManager.getConnection(DB_CONNECTION, DB_USER,DB_PASSWORD);
 			return dbConnection;
 		} catch (SQLException e) {
@@ -156,7 +155,90 @@ public class DbManager {
 		}
 	}
 	
-	public void executeSelect(){
+	public void executeSelect(String email){
+		try {
+			  myConnect 					= getDBConnection();
+			  if (myConnect==null)
+				  return;
+			  
+			  	String sql = "SELECT * FROM user WHERE email LIKE ?";
+				myDbMetaData 				= myConnect.getMetaData();
+				myState						= myConnect.createStatement();
+				myResultSet					= myState.executeQuery(sql);
+				myResultSetMetaData			= myResultSet.getMetaData();
+
+				System.out.println("\r\nDbManager: dbConnect: show Query MetaData:");
+				
+				int nbrColumn				= myResultSetMetaData.getColumnCount();
+				List<String[]>	list		= new ArrayList<String[]>();
+				arrayHeader					= new String[nbrColumn];
+	        
+				//la première colonne porte l'index 1, ET NON 0 !!!
+				for (int i = 0; i != nbrColumn; i++) 
+				{
+					arrayHeader[i]	= myResultSetMetaData.getColumnName(i + 1);
+					
+					System.out.println("DbManager: dbConnect: MetaInfo: columnName=" + myResultSetMetaData.getColumnName(i + 1) + ", columnType=" + myResultSetMetaData.getColumnTypeName(i + 1));
+				}
+
+				System.out.println("\r\nDbManager: dbConnect: show Query Data:");
+				//la première colonne porte l'index 1, ET NON 0 !!!
+				while (myResultSet.next()) //incremente aussi l'index pour la lecture des données
+				{
+					String[] content 		= new String[nbrColumn];
+					content[0]				= myResultSet.getString(1);         
+					content[1]				= myResultSet.getString(2);         
+
+					list.add(content);
+					
+					System.out.println("DbManager: dbConnect: resultSet 1st column=" 	+ content[0]); 
+					System.out.println("DbManager: dbConnect: resultSet 2nd column=" 	+ content[1] + "\r\n"); 
+					
+					//l'object ResultSet peut invoker bon nombre de getters: 
+					//getShort, getDouble, getInt, getByte, getBoolean, getBigDecimal, getBinaryStream, getAsciiStream, 
+					//getDate, getFloat, getBlob, getClob...						
+				}
+		}
+		catch (SQLException e) 				{System.out.println("dbConnect SQLException: " + e.toString()); e.printStackTrace();}	
+		catch (Exception e) 					{System.out.println("dbConnect Exception: " + e.toString()); 	e.printStackTrace();}	
+	}
+	
+
+	public User selectRecordsFromTable(String id) throws SQLException {
+		String selectSQL = "SELECT * FROM user WHERE email LIKE ?";
+		User user = new User();
+		try {
+			
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(selectSQL);
+			myPreparedStatement.setString(1, id);
+
+			// execute select SQL stetement
+			ResultSet rs = myPreparedStatement.executeQuery();
+			
+			rs.next();	
+			
+			int userid = rs.getInt("iduser");
+			String email = rs.getString("email");
+			String username = rs.getString("name");
+			String mdp = rs.getString("mdp");
+			
+			user.setId(userid);
+			user.setEmail(email);
+			user.setUserName(username);
+			user.setPassword(mdp);
+				
+			System.out.println("userid : " + userid);
+			System.out.println("username : " + username);
+				
+			
+		} 
+		catch (SQLException e) { System.out.println(e.getMessage());} 
+		finally { 	if (myPreparedStatement != null) { myPreparedStatement.close(); }
+					if (myConnect != null) { myConnect.close(); }	
+		}
+		
+		return user;
 		
 	}
 	

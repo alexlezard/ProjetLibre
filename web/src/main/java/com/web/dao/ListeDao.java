@@ -21,7 +21,7 @@ public class ListeDao implements InterfaceDao{
 	}
 
 	@Override
-	public String findById() {
+	public String findById(Object id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1,10 +1,17 @@
 package com.web.controller;
 
+import java.sql.SQLException;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.web.dao.UserDao;
+import com.web.db.DbManager;
+import com.web.helper.CommonHelper;
 import com.web.model.User;
 
 @Controller
@@ -21,7 +28,7 @@ public class UserController{
 	public User getUserInformation(String email) {
 		User u = new User();
 		u.setEmail("alex@gmail.com");
-		u.setMdp("azerty87SJ");
+		u.setPassword("azerty87SJ");
 		
 		return u;
 	}
@@ -29,9 +36,16 @@ public class UserController{
 	// recuperer json depuis le client : {email:"toto@toto.com",mdp:"azeert123"}
 	// renvoyer JSON avec nom , email, id  
 	// en option : avec un token, date d'expiration du token
-	@RequestMapping(value = URL_LOGIN, method = RequestMethod.POST)
-	public @ResponseBody User Login() {
-		return null;
+	@RequestMapping(value = URL_LOGIN, method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody User Login(@RequestBody User user) {
+		String email =  user.getEmail();
+		if (CommonHelper.emailValidator(email))
+			return user;
+		if (user!=null){
+			UserDao ud = new UserDao();
+			return ud.findById(email);
+		}
+		return user;
 	}
 	
 	@RequestMapping(value = URL_CREATEUSER, method = RequestMethod.POST)

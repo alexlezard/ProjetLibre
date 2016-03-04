@@ -1,3 +1,5 @@
+import java.sql.SQLException;
+
 import com.web.db.DbManager;
 
 public class test {
@@ -6,7 +8,12 @@ public class test {
 		    System.out.println("Dbmanager ------>");
 		    
 		   
-		    DbManager.getInstance().dbExecute("SELECT * FROM projetlibre.user;");
+		    try {
+				DbManager.getInstance().selectRecordsFromTable("");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	   
 }
