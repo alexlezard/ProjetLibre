@@ -46,12 +46,20 @@ public class UserController{
 			if (userBody!=null) {
 				UserDao ud 	= new UserDao();
 				User user 	= ud.findById(email);
-				
-				r.setStatus("OK");
-				r.setMessage("User has been connected sucessfully");
-				r.setData(user);
-				
+				System.out.println(" pwd bdd "+user.getPassword());
+				System.out.println(" pwd request "+userBody.getPassword());
+				if (userBody.getPassword().equals(user.getPassword())) {
+					r.setStatus("OK");
+					r.setMessage("User has been connected sucessfully");
+					r.setData(user);
+					
+					return r;
+				}
+				r.setStatus("KO");
+				r.setMessage("Password is not corret :-(");
+				r.setData(null);
 				return r;
+			
 			}
 		}
 		
