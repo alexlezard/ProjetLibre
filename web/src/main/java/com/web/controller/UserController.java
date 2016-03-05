@@ -39,11 +39,11 @@ public class UserController{
 	@RequestMapping(value = URL_LOGIN, method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody User Login(@RequestBody User user) {
 		String email =  user.getEmail();
-		if (CommonHelper.emailValidator(email))
-			return user;
-		if (user!=null){
-			UserDao ud = new UserDao();
-			return ud.findById(email);
+		if (CommonHelper.emailValidator(email)) {
+			if (user!=null){
+				UserDao ud = new UserDao();
+				return ud.findById(email);
+			}
 		}
 		return user;
 	}
