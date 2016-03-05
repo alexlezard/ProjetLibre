@@ -227,9 +227,11 @@ public class DbManager {
 			user.setEmail(email);
 			user.setUserName(username);
 			user.setPassword(mdp);
-				
+			
 			System.out.println("userid : " + userid);
 			System.out.println("username : " + username);
+			System.out.println("email : " + email);
+			System.out.println("mdp : " + mdp);
 				
 			
 		} 
