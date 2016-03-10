@@ -7,11 +7,19 @@ import com.web.db.DbManager;
 import com.web.model.User;
 
 public class UserDao implements InterfaceDao{
-
+	
+	public UserDao(){
+		
+	}
+	
 	@Override
 	public String insert() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public boolean insert(User userBody) {
+		return DbManager.getInstance().InsertUser(userBody);
 	}
 
 	@Override

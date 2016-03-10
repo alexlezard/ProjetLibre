@@ -3,6 +3,7 @@ package com.web.controller;
 import java.sql.SQLException;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +25,10 @@ public class UserController{
 	private static final String URL_REMOVEUSER 		= "/removeUser";
 	private static final String URL_LOGIN 		= "/login";
 	
+	public UserController(){
+		
+	}
+	
 	@RequestMapping(value = URL_GETUSERINFO, method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public User getUserInformation(String email) {
@@ -37,6 +42,7 @@ public class UserController{
 	// recuperer json depuis le client : {email:"toto@toto.com",mdp:"azeert123"}
 	// renvoyer JSON avec nom , email, id  
 	// en option : avec un token, date d'expiration du token
+	@CrossOrigin(origins = "*")
 	@RequestMapping(value = URL_LOGIN, method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody Response Login(@RequestBody User userBody) {
 		Response r 	= new Response();
@@ -56,7 +62,7 @@ public class UserController{
 					return r;
 				}
 				r.setStatus("KO");
-				r.setMessage("Password is not corret :-(");
+				r.setMessage("Id's are not correct :-(");
 				r.setData(null);
 				return r;
 			
@@ -64,15 +70,32 @@ public class UserController{
 		}
 		
 		r.setStatus("KO");
-		r.setMessage("Email is not correct");
+		r.setMessage("Id's are not correct");
 		r.setData(null);
 		
 		return r;
 	}
 	
+	@CrossOrigin(origins = "*")
 	@RequestMapping(value = URL_CREATEUSER, method = RequestMethod.POST)
-	public @ResponseBody User createUser() {
-		return null;
+	public @ResponseBody Response createUser(@RequestBody User userBody) {
+		Response r 	= new Response();
+		
+		if (CommonHelper.emailValidator(userBody.getEmail())) {
+			UserDao ud 	= new UserDao();
+			boolean isInserted = ud.insert(userBody);
+			if (isInserted){
+				r.setStatus("OK");
+				r.setData(null);
+				r.setMessage("You have been registred successfully. Welcome ! ");
+				return r;
+			}
+		}
+		r.setStatus("KO");
+		r.setData(null);
+		r.setMessage("Some fields you wrote down went wrong. Try again !");
+		
+		return r;
 	}
 	
 	@RequestMapping(value = URL_REMOVEUSER, method = RequestMethod.POST)
@@ -83,6 +106,6 @@ public class UserController{
 	@RequestMapping("/")
 	@ResponseBody
 	public String displayHelloWorld(){
-		return "Hello Pakpak !!";
+		return "Welcome";
 	}
 }

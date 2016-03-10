@@ -17,7 +17,7 @@ public class DbManager {
 	
 	//Objects spécifiques aux differents appels vers les bases (locales ou distantes).	
 	public Connection			myConnect;	
-	public Statement			myState;
+	public Statement			myStatement;
 	public ResultSet			myResultSet;
 
 	//Objects de Meta-Information sur la Database connectée, et sur la requête effectuée.
@@ -25,7 +25,7 @@ public class DbManager {
 	public ResultSetMetaData	myResultSetMetaData;
 	
 	public PreparedStatement 	myPreparedStatement;
-
+	
 	public String 				arrayContent[][];
 	public String 				arrayHeader[];
 	public String 				strConnectURL;
@@ -78,10 +78,10 @@ public class DbManager {
 			//etc... de nombreuses autres info sont disponibles
 			
 			//4eme etape: creation d'une instruction/formule, socle pour executer des requetes
-			myState						= myConnect.createStatement();
+			myStatement						= myConnect.createStatement();
 
 			//5eme etape: invocation d'une requête (soit une selection stockee dans un ResultSet, soit un update/delete/insert renvoyant le nbr de ligne modifiee(s)).
-			myResultSet					= myState.executeQuery(sql);
+			myResultSet					= myStatement.executeQuery(sql);
 			//int nbrRow				= myState.executeUpdate("Delete from personne where id=2");
 
 			//Stockage de l'historique des requetes dans un fichier, histoire d'avoir un backup
@@ -145,7 +145,7 @@ public class DbManager {
 		catch (Exception e) 					{System.out.println("dbConnect Exception: " + e.toString()); 	e.printStackTrace();}	
 		finally
 		{
-			try {myState.close();}
+			try {myStatement.close();}
 			catch (java.sql.SQLException e)	{System.out.println("dbDisconnect: close statement: " + e.toString());}
 			catch (Exception e)	{System.out.println("dbDisconnect: close statement: " + e.toString());}		
 			
@@ -163,8 +163,8 @@ public class DbManager {
 			  
 			  	String sql = "SELECT * FROM user WHERE email LIKE ?";
 				myDbMetaData 				= myConnect.getMetaData();
-				myState						= myConnect.createStatement();
-				myResultSet					= myState.executeQuery(sql);
+				myStatement						= myConnect.createStatement();
+				myResultSet					= myStatement.executeQuery(sql);
 				myResultSetMetaData			= myResultSet.getMetaData();
 
 				System.out.println("\r\nDbManager: dbConnect: show Query MetaData:");
@@ -216,24 +216,22 @@ public class DbManager {
 			// execute select SQL stetement
 			ResultSet rs = myPreparedStatement.executeQuery();
 			
-			rs.next();	
-			
-			int userid = rs.getInt("iduser");
-			String email = rs.getString("email");
-			String username = rs.getString("name");
-			String mdp = rs.getString("mdp");
-			
-			user.setId(userid);
-			user.setEmail(email);
-			user.setUserName(username);
-			user.setPassword(mdp);
-			
-			System.out.println("userid : " + userid);
-			System.out.println("username : " + username);
-			System.out.println("email : " + email);
-			System.out.println("mdp : " + mdp);
+			if (rs.first()){
 				
+				//rs.next();	
 			
+				int userid = rs.getInt("iduser");
+				String email = rs.getString("email");
+				String username = rs.getString("username");
+				String mdp = rs.getString("mdp");
+				
+				// je modifie l'objet a retourner : User
+				user.setId(userid);
+				user.setEmail(email);
+				user.setUserName(username);
+				user.setPassword(mdp);
+				
+			}
 		} 
 		catch (SQLException e) { System.out.println(e.getMessage());} 
 		finally { 	if (myPreparedStatement != null) { myPreparedStatement.close(); }
@@ -242,6 +240,51 @@ public class DbManager {
 		
 		return user;
 		
+	}
+	
+	public Boolean InsertUser(User user) {
+		String sql = "INSERT INTO user VALUES (NULL,?,?,?)";
+		String email = user.getEmail();
+		if (userExist(email)){
+			System.out.println(" This id (email) "+email+" is already inserted in db");
+			return false;
+		}
+		
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement 		= myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setString(1, user.getUserName());
+			myPreparedStatement.setString(2, email);
+			myPreparedStatement.setString(3, user.getPassword());
+			
+			int rowsInserted = myPreparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+			    System.out.println("A new user was inserted successfully!");
+			    return true;
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		
+		System.out.println("user NOT Inserted !");
+		return false;
+	}
+	
+	
+	public boolean userExist(String email){
+		String selectSQL = "SELECT * FROM user WHERE email LIKE ?";
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(selectSQL);
+			myPreparedStatement.setString(1, email);
+			ResultSet rs = myPreparedStatement.executeQuery();
+			
+			if (rs.first())
+				return true;
+		} 
+		catch (SQLException e) { e.printStackTrace(); }
+		
+		return false;
 	}
 	
 }
