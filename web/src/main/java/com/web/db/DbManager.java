@@ -11,6 +11,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.util.DigestUtils;
+
+import com.web.helper.CommonHelper;
 import com.web.model.User;
 
 public class DbManager {
@@ -252,11 +255,11 @@ public class DbManager {
 		
 		try {
 			myConnect 			= getDBConnection();
-			myPreparedStatement 		= myConnect.prepareStatement(sql);
+			myPreparedStatement = myConnect.prepareStatement(sql);
 			
 			myPreparedStatement.setString(1, user.getUserName());
 			myPreparedStatement.setString(2, email);
-			myPreparedStatement.setString(3, user.getPassword());
+			myPreparedStatement.setString(3,CommonHelper.toSha1(user.getPassword()));
 			
 			int rowsInserted = myPreparedStatement.executeUpdate();
 			if (rowsInserted > 0) {
@@ -269,7 +272,6 @@ public class DbManager {
 		System.out.println("user NOT Inserted !");
 		return false;
 	}
-	
 	
 	public boolean userExist(String email){
 		String selectSQL = "SELECT * FROM user WHERE email LIKE ?";

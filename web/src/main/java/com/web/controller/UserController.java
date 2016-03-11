@@ -54,9 +54,10 @@ public class UserController{
 				User user 	= ud.findById(email);
 				System.out.println(" pwd bdd "+user.getPassword());
 				System.out.println(" pwd request "+userBody.getPassword());
-				if (userBody.getPassword().equals(user.getPassword())) {
+				if (CommonHelper.toSha1(userBody.getPassword()).equals(user.getPassword())) {
 					r.setStatus("OK");
 					r.setMessage("User has been connected sucessfully");
+					user.setPassword("*********************");
 					r.setData(user);
 					
 					return r;
