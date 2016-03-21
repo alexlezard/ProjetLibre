@@ -20,10 +20,12 @@ import com.web.model.User;
 public class UserController{
 	
 	private static final String URL_GETUSERINFO 	= "/user";
-	private static final String URL_GETLISTSUSER 	= "/mylists"; 
-	private static final String URL_CREATEUSER 		= "/createUser";
-	private static final String URL_REMOVEUSER 		= "/removeUser";
-	private static final String URL_LOGIN 		= "/login";
+	private static final String URL_GETLISTSUSER 	= "/user/lists"; 
+/*	private static final String URL_CREATEUSER 		= "/createUser";
+	private static final String URL_REMOVEUSER 		= "/removeUser"; */
+	private static final String URL_CREATEUSER 		= "/user/create";
+	private static final String URL_REMOVEUSER 		= "/user/remove";
+	private static final String URL_LOGIN 			= "/login";
 	
 	public UserController(){
 		
@@ -99,7 +101,7 @@ public class UserController{
 		return r;
 	}
 	
-	@RequestMapping(value = URL_REMOVEUSER, method = RequestMethod.POST)
+	@RequestMapping(value = URL_REMOVEUSER, method = RequestMethod.DELETE)
 	public @ResponseBody User removeUser() {
 		return null;
 	}

@@ -207,7 +207,7 @@ public class DbManager {
 	}
 	
 
-	public User selectRecordsFromTable(String id) throws SQLException {
+	public User getUserFromTable(String id) throws SQLException {
 		String selectSQL = "SELECT * FROM user WHERE email LIKE ?";
 		User user = new User();
 		try {
@@ -242,7 +242,6 @@ public class DbManager {
 		}
 		
 		return user;
-		
 	}
 	
 	public Boolean InsertUser(User user) {
@@ -260,6 +259,8 @@ public class DbManager {
 			myPreparedStatement.setString(1, user.getUserName());
 			myPreparedStatement.setString(2, email);
 			myPreparedStatement.setString(3,CommonHelper.toSha1(user.getPassword()));
+			
+			
 			
 			int rowsInserted = myPreparedStatement.executeUpdate();
 			if (rowsInserted > 0) {

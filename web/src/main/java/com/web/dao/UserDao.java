@@ -8,7 +8,7 @@ import com.web.model.User;
 
 public class UserDao implements InterfaceDao{
 	
-	public UserDao(){
+	public UserDao() {
 		
 	}
 	
@@ -37,7 +37,7 @@ public class UserDao implements InterfaceDao{
 	public User findById(String email) {
 		if (email instanceof String){
 				try { 
-					return DbManager.getInstance().selectRecordsFromTable(email);
+					return DbManager.getInstance().getUserFromTable(email);
 				} catch (SQLException e) { e.printStackTrace();};
 		}
 		return null;
