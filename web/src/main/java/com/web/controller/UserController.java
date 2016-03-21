@@ -22,9 +22,9 @@ public class UserController{
 	private static final String URL_GETUSERINFO 	= "/user";
 	private static final String URL_GETLISTSUSER 	= "/user/lists"; 
 /*	private static final String URL_CREATEUSER 		= "/createUser";
-	private static final String URL_REMOVEUSER 		= "/removeUser"; */
-	private static final String URL_CREATEUSER 		= "/user/create";
-	private static final String URL_REMOVEUSER 		= "/user/remove";
+	private static final String URL_REMOVEUSER 		= "/removeUser"; */ 
+	private static final String URL_CREATEUSER 		= "/users";
+	private static final String URL_REMOVEUSER 		= "/users";
 	private static final String URL_LOGIN 			= "/login";
 	
 	public UserController(){
