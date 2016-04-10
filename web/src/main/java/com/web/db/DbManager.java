@@ -11,9 +11,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.util.DigestUtils;
-
 import com.web.helper.CommonHelper;
+import com.web.model.Category;
+import com.web.model.Liste;
 import com.web.model.User;
 
 public class DbManager {
@@ -65,6 +65,202 @@ public class DbManager {
 
 	}
 	
+	/***********************************
+	 ************* CATEGORY ************
+	 ***********************************/
+	
+	public User getUser(String id) throws SQLException {
+		String selectSQL = "SELECT * FROM user WHERE email LIKE ?";
+		User user = new User();
+		try {
+			
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(selectSQL);
+			myPreparedStatement.setString(1, id);
+
+			// execute select SQL stetement
+			ResultSet rs = myPreparedStatement.executeQuery();
+			
+			if (rs.first()){
+				
+				//rs.next();	
+			
+				int userid = rs.getInt("iduser");
+				String email = rs.getString("email");
+				String username = rs.getString("username");
+				String mdp = rs.getString("mdp");
+				
+				// je modifie l'objet a retourner : User
+				user.setId(userid);
+				user.setEmail(email);
+				user.setUserName(username);
+				user.setPassword(mdp);
+				
+			}
+		} 
+		catch (SQLException e) { System.out.println(e.getMessage());} 
+		finally { 	if (myPreparedStatement != null) { myPreparedStatement.close(); }
+					if (myConnect != null) { myConnect.close(); }	
+		}
+		
+		return user;
+	}
+	
+	public boolean InsertUser(User user) {
+		String sql = "INSERT INTO user VALUES (NULL,?,?,?)";
+		String email = user.getEmail();
+		if (userExist(email)){
+			System.out.println(" This id (email) "+email+" is already inserted in db");
+			return false;
+		}
+		
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setString(1, user.getUserName());
+			myPreparedStatement.setString(2, email);
+			myPreparedStatement.setString(3,CommonHelper.toSha1(user.getPassword()));
+			
+			int rowsInserted = myPreparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+			    System.out.println("A new user has been inserted successfully!");
+			    return true;
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		
+		System.out.println("user NOT Inserted !");
+		return false;
+	}
+	
+	public boolean userExist(String email){
+		String selectSQL = "SELECT * FROM user WHERE email LIKE ?";
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(selectSQL);
+			myPreparedStatement.setString(1, email);
+			ResultSet rs = myPreparedStatement.executeQuery();
+			
+			if (rs.first())
+				return true;
+		} 
+		catch (SQLException e) { e.printStackTrace(); }
+		
+		return false;
+	}
+	
+	/***********************************
+	 ************* CATEGORY ************
+	 ***********************************/
+	
+	public boolean getAllUserCategory( int userID ) {
+		String sql = "SELECT * FROM category WHERE user_iduser = ?";
+		
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			myPreparedStatement.setInt(1, userID);
+			ResultSet rs = myPreparedStatement.executeQuery();
+			
+			if (rs.first())
+				return true;
+		} 
+		catch (SQLException e) { e.printStackTrace(); }
+		
+//		while (rs.next()) //incremente aussi l'index pour la lecture des données
+//		{
+//			String[] content 		= new String[nbrColumn];
+//			content[0]				= myResultSet.getString(1);         
+//			content[1]				= myResultSet.getString(2);         
+//
+//			list.add(content);
+//		}
+		
+		System.out.println("category has not been Inserted !");
+		return false;
+		
+	}
+	
+	public boolean InsertCategory(Category cat) {
+		String sql = "INSERT INTO category VALUES (NULL,?,?)";
+		
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setString(1, cat.getName());
+			myPreparedStatement.setInt(2, cat.getIdUser());
+			
+			int rowsInserted = myPreparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+			    System.out.println("A new category has been inserted successfully!");
+			    return true;
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		
+		System.out.println("category has not been Inserted !");
+		return false;
+	}
+	
+	public boolean UpdateCategory(Category cat) {
+		String sql = "UPDATE category SET name = ? WHERE idcategory = ? AND user_iduser = ?";
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setString(1, cat.getName());
+			myPreparedStatement.setInt(2, cat.getId());
+			myPreparedStatement.setInt(3, cat.getIdUser());
+			
+			int rowsInserted = myPreparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+			    System.out.println("A new category has been updated successfully!");
+			    return true;
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		
+		System.out.println("category has not been Update !");
+		return false;
+	}
+	
+	/***********************************
+	 ************* LIST ****************
+	 ***********************************/
+	
+	public boolean InsertList(Liste list) {
+		String sql = "INSERT INTO list VALUES (NULL,?,?,?)";
+		
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setString(1, list.getName());
+			myPreparedStatement.setString(2, list.getDescription());
+			myPreparedStatement.setInt(3, list.getIdCatedory());
+			
+			int rowsInserted = myPreparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+			    System.out.println("A new list has been inserted successfully!");
+			    return true;
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		
+		System.out.println("category has not been Inserted !");
+		return false;
+	}
+	
+	/***********************************
+	 ************* TEST  ***************
+	 ***********************************/
+	
+	/**
+	 * Fonction de test
+	 * @param sql
+	 */
 	public void dbExecute(String sql)
 	{
 		try
@@ -124,7 +320,7 @@ public class DbManager {
 				System.out.println("DbManager: dbConnect: resultSet 2nd column=" 	+ content[1] + "\r\n"); 
 				
 				//l'object ResultSet peut invoker bon nombre de getters: 
-				//getShort, getDouble, getInt, getByte, getBoolean, getBigDecimal, getBinaryStream, getAsciiStream, 
+				//getShort, getDouble, getInt, getByte, getboolean, getBigDecimal, getBinaryStream, getAsciiStream, 
 				//getDate, getFloat, getBlob, getClob...						
 			}
 			
@@ -158,6 +354,10 @@ public class DbManager {
 		}
 	}
 	
+	/**
+	 * fonction de test
+	 * @param email
+	 */
 	public void executeSelect(String email){
 		try {
 			  myConnect 					= getDBConnection();
@@ -166,7 +366,7 @@ public class DbManager {
 			  
 			  	String sql = "SELECT * FROM user WHERE email LIKE ?";
 				myDbMetaData 				= myConnect.getMetaData();
-				myStatement						= myConnect.createStatement();
+				myStatement					= myConnect.createStatement();
 				myResultSet					= myStatement.executeQuery(sql);
 				myResultSetMetaData			= myResultSet.getMetaData();
 
@@ -198,7 +398,7 @@ public class DbManager {
 					System.out.println("DbManager: dbConnect: resultSet 2nd column=" 	+ content[1] + "\r\n"); 
 					
 					//l'object ResultSet peut invoker bon nombre de getters: 
-					//getShort, getDouble, getInt, getByte, getBoolean, getBigDecimal, getBinaryStream, getAsciiStream, 
+					//getShort, getDouble, getInt, getByte, getboolean, getBigDecimal, getBinaryStream, getAsciiStream, 
 					//getDate, getFloat, getBlob, getClob...						
 				}
 		}
@@ -206,88 +406,5 @@ public class DbManager {
 		catch (Exception e) 					{System.out.println("dbConnect Exception: " + e.toString()); 	e.printStackTrace();}	
 	}
 	
-
-	public User getUserFromTable(String id) throws SQLException {
-		String selectSQL = "SELECT * FROM user WHERE email LIKE ?";
-		User user = new User();
-		try {
-			
-			myConnect 			= getDBConnection();
-			myPreparedStatement = myConnect.prepareStatement(selectSQL);
-			myPreparedStatement.setString(1, id);
-
-			// execute select SQL stetement
-			ResultSet rs = myPreparedStatement.executeQuery();
-			
-			if (rs.first()){
-				
-				//rs.next();	
-			
-				int userid = rs.getInt("iduser");
-				String email = rs.getString("email");
-				String username = rs.getString("username");
-				String mdp = rs.getString("mdp");
-				
-				// je modifie l'objet a retourner : User
-				user.setId(userid);
-				user.setEmail(email);
-				user.setUserName(username);
-				user.setPassword(mdp);
-				
-			}
-		} 
-		catch (SQLException e) { System.out.println(e.getMessage());} 
-		finally { 	if (myPreparedStatement != null) { myPreparedStatement.close(); }
-					if (myConnect != null) { myConnect.close(); }	
-		}
-		
-		return user;
-	}
-	
-	public Boolean InsertUser(User user) {
-		String sql = "INSERT INTO user VALUES (NULL,?,?,?)";
-		String email = user.getEmail();
-		if (userExist(email)){
-			System.out.println(" This id (email) "+email+" is already inserted in db");
-			return false;
-		}
-		
-		try {
-			myConnect 			= getDBConnection();
-			myPreparedStatement = myConnect.prepareStatement(sql);
-			
-			myPreparedStatement.setString(1, user.getUserName());
-			myPreparedStatement.setString(2, email);
-			myPreparedStatement.setString(3,CommonHelper.toSha1(user.getPassword()));
-			
-			
-			
-			int rowsInserted = myPreparedStatement.executeUpdate();
-			if (rowsInserted > 0) {
-			    System.out.println("A new user was inserted successfully!");
-			    return true;
-			}
-		}
-		catch (SQLException e) { System.out.println(e.getMessage());}
-		
-		System.out.println("user NOT Inserted !");
-		return false;
-	}
-	
-	public boolean userExist(String email){
-		String selectSQL = "SELECT * FROM user WHERE email LIKE ?";
-		try {
-			myConnect 			= getDBConnection();
-			myPreparedStatement = myConnect.prepareStatement(selectSQL);
-			myPreparedStatement.setString(1, email);
-			ResultSet rs = myPreparedStatement.executeQuery();
-			
-			if (rs.first())
-				return true;
-		} 
-		catch (SQLException e) { e.printStackTrace(); }
-		
-		return false;
-	}
 	
 }

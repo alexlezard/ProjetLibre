@@ -17,18 +17,15 @@ import com.web.model.Response;
 import com.web.model.User;
 
 @Controller
-public class UserController{
+public class UserController {
 	
 	private static final String URL_GETUSERINFO 	= "/user";
-	private static final String URL_GETLISTSUSER 	= "/user/lists"; 
-/*	private static final String URL_CREATEUSER 		= "/createUser";
-	private static final String URL_REMOVEUSER 		= "/removeUser"; */ 
 	private static final String URL_CREATEUSER 		= "/users";
 	private static final String URL_REMOVEUSER 		= "/users";
 	private static final String URL_LOGIN 			= "/login";
 	
-	public UserController(){
-		
+	public UserController() {
+			
 	}
 	
 	@RequestMapping(value = URL_GETUSERINFO, method = RequestMethod.GET, produces = "application/json")
@@ -47,28 +44,32 @@ public class UserController{
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = URL_LOGIN, method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody Response Login(@RequestBody User userBody) {
-		Response r 	= new Response();
+		Response r 	 = new Response();
 		String email =  userBody.getEmail();
 		
 		if (CommonHelper.emailValidator(email)) {
 			if (userBody!=null) {
 				UserDao ud 	= new UserDao();
-				User user 	= ud.findById(email);
+				User user 	= (User) ud.findById(email);
+				
 				System.out.println(" pwd request "+userBody.getPassword());
 				System.out.println(" pwd bdd "+user.getPassword());
+				
 				if (CommonHelper.toSha1(userBody.getPassword()).equals(user.getPassword())) {
 					r.setStatus("OK");
 					r.setMessage("User has been connected sucessfully");
+					user.setConnected(true);
 					user.setPassword("*********************");
 					r.setData(user);
 					
 					return r;
 				}
+				
 				r.setStatus("KO");
 				r.setMessage("Id's are not correct :-(");
 				r.setData(null);
+				
 				return r;
-			
 			}
 		}
 		
@@ -87,13 +88,15 @@ public class UserController{
 		if (CommonHelper.emailValidator(userBody.getEmail())) {
 			UserDao ud 	= new UserDao();
 			boolean isInserted = ud.insert(userBody);
-			if (isInserted){
+			
+			if (isInserted) {
 				r.setStatus("OK");
 				r.setData(null);
 				r.setMessage("You have been registred successfully. Welcome ! ");
 				return r;
 			}
 		}
+		
 		r.setStatus("KO");
 		r.setData(null);
 		r.setMessage("Some fields you wrote down went wrong. Try again !");

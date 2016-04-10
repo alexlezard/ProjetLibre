@@ -2,11 +2,11 @@ package com.web.dao;
 
 public interface InterfaceDao {
 	
-	public String insert();
+	public String insert(Object obj);
 	
-	public String remove();
+	public String remove(Object obj);
 	
-	public String update();
+	public String update(Object obj);
 	
-	public String findById(Object obj);
+	public Object findById(Object obj);
 }

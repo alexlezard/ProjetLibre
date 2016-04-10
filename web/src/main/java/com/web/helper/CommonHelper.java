@@ -30,7 +30,6 @@ public class CommonHelper {
 	 
 	public static String toSha1(String password)
 	{
-	    	
 	        MessageDigest md = null;
 			try {
 				md = MessageDigest.getInstance("SHA-256");

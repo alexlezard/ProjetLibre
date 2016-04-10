@@ -12,36 +12,17 @@ public class UserDao implements InterfaceDao{
 		
 	}
 	
-	@Override
-	public String insert() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	public boolean insert(User userBody) {
 		return DbManager.getInstance().InsertUser(userBody);
 	}
-
-	@Override
-	public String remove() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String update() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public User findById(String email) {
-		if (email instanceof String){
-				try { 
-					return DbManager.getInstance().getUserFromTable(email);
-				} catch (SQLException e) { e.printStackTrace();};
-		}
-		return null;
-	}
+//	public User findById(Object email) {
+//		if ((String)email instanceof String){
+//				try { 
+//					return DbManager.getInstance().getUserFromTable(email);
+//				} catch (SQLException e) { e.printStackTrace();};
+//		}
+//		return null;
+//	}
 	
 	public String login(){
 		return null;
@@ -52,7 +33,29 @@ public class UserDao implements InterfaceDao{
 	}
 
 	@Override
-	public String findById(Object obj) {
+	public Object findById(Object email) {
+		if ((String)email instanceof String){
+			try { 
+				return (User)DbManager.getInstance().getUser((String)email);
+			} catch (SQLException e) { e.printStackTrace();};
+		}
+		return null;
+	}
+
+	@Override
+	public String insert(Object obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String remove(Object obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String update(Object obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}

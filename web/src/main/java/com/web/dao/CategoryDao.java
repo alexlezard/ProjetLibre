@@ -1,9 +1,12 @@
 package com.web.dao;
 
-public class ListeDao implements InterfaceDao{
+import com.web.db.DbManager;
+import com.web.model.Category;
+
+public class CategoryDao implements InterfaceDao {
 
 	@Override
-	public String findById(Object id) {
+	public Object findById(Object obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
