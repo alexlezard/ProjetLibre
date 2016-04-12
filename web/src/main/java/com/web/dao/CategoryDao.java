@@ -1,5 +1,8 @@
 package com.web.dao;
 
+import java.util.List;
+
+import com.mysql.jdbc.StringUtils;
 import com.web.db.DbManager;
 import com.web.model.Category;
 
@@ -28,5 +31,14 @@ public class CategoryDao implements InterfaceDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public List getAllCategories(int id){
+		if (id>0){
+			return DbManager.getInstance().getAllUserCategory(id);
+		}
+		return null;
+	}
+	
+	
 
 }

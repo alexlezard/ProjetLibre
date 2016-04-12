@@ -20,7 +20,8 @@ public class test {
 		   cat.setIdUser(11);
 		   
 		   //dbman.InsertCategory(cat);
-		   dbman.UpdateCategory(cat);
+		   //dbman.UpdateCategory(cat);
+		   System.out.println( dbman.getAllUserCategory(11) );
 	   }
 	   
 	   private static String createJWT(String id, String issuer, String subject, long ttlMillis) {

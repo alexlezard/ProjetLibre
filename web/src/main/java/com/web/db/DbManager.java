@@ -66,7 +66,7 @@ public class DbManager {
 	}
 	
 	/***********************************
-	 ************* CATEGORY ************
+	 ************* USER ************
 	 ***********************************/
 	
 	public User getUser(String id) throws SQLException {
@@ -154,31 +154,26 @@ public class DbManager {
 	 ************* CATEGORY ************
 	 ***********************************/
 	
-	public boolean getAllUserCategory( int userID ) {
+	public List getAllUserCategory( int userID ) {
 		String sql = "SELECT * FROM category WHERE user_iduser = ?";
-		
+		ArrayList list = new ArrayList();
 		try {
 			myConnect 			= getDBConnection();
 			myPreparedStatement = myConnect.prepareStatement(sql);
 			myPreparedStatement.setInt(1, userID);
-			ResultSet rs = myPreparedStatement.executeQuery();
+			myResultSet = myPreparedStatement.executeQuery();
+
+//			if (rs.first())
+//				return true;
 			
-			if (rs.first())
-				return true;
+			while (myResultSet.next()) //incremente aussi l'index pour la lecture des données
+			{
+				list.add(myResultSet.getString("name"));
+			}
 		} 
 		catch (SQLException e) { e.printStackTrace(); }
 		
-//		while (rs.next()) //incremente aussi l'index pour la lecture des données
-//		{
-//			String[] content 		= new String[nbrColumn];
-//			content[0]				= myResultSet.getString(1);         
-//			content[1]				= myResultSet.getString(2);         
-//
-//			list.add(content);
-//		}
-		
-		System.out.println("category has not been Inserted !");
-		return false;
+		return list;
 		
 	}
 	
@@ -294,7 +289,7 @@ public class DbManager {
 			int nbrColumn				= myResultSetMetaData.getColumnCount();
 			List<String[]>	list		= new ArrayList<String[]>();
 			arrayHeader					= new String[nbrColumn];
-        
+			
 			//la première colonne porte l'index 1, ET NON 0 !!!
 			for (int i = 0; i != nbrColumn; i++) 
 			{

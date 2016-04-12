@@ -14,6 +14,7 @@ import com.web.dao.UserDao;
 import com.web.db.DbManager;
 import com.web.helper.CommonHelper;
 import com.web.model.Response;
+import com.web.model.Session;
 import com.web.model.User;
 
 @Controller
@@ -47,13 +48,14 @@ public class UserController {
 		Response r 	 = new Response();
 		String email =  userBody.getEmail();
 		
-		if (CommonHelper.emailValidator(email)) {
-			if (userBody!=null) {
+		if (CommonHelper.emailValidator(email) && userBody!=null) {
 				UserDao ud 	= new UserDao();
 				User user 	= (User) ud.findById(email);
+				Session.getInstance().setUser(user);
 				
 				System.out.println(" pwd request "+userBody.getPassword());
 				System.out.println(" pwd bdd "+user.getPassword());
+				System.out.println(" pwd bdd "+user.getId());
 				
 				if (CommonHelper.toSha1(userBody.getPassword()).equals(user.getPassword())) {
 					r.setStatus("OK");
@@ -70,7 +72,6 @@ public class UserController {
 				r.setData(null);
 				
 				return r;
-			}
 		}
 		
 		r.setStatus("KO");

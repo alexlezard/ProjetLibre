@@ -11,10 +11,6 @@ public class Category {
 	private List<Liste> listofList;
 	
 	public Category(){
-		if(User.getInstance()!=null) 
-			setIdUser(User.getInstance().getId());
-		else
-			setIdUser(-1);
 		
 	}
 	

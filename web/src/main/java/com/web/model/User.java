@@ -4,26 +4,26 @@ import java.util.List;
 
 public class User {
 	
-	private static User user;
+	//private static User user;
 	
 	private int id;
 	private String userName;
 	private String email;
 	private String password;
 	private String token;
-	private boolean isConnected = true;
+	private boolean isConnected = false;
 	
 	private List<Category> categorieList;
 	
 	public User(){
-		
+		System.out.println( "User class id "+getId());
 	}
 	
-	public static synchronized User getInstance( ) {
-		      if (user == null)
-		          user =new User();
-		      return user;
-	}
+//	public static synchronized User getInstance( ) {
+//		      if (user == null)
+//		          user =new User();
+//		      return user;
+//	}
 	
 	/*********************
 	 ** GETTER & SETTER ** 
@@ -41,4 +41,6 @@ public class User {
 	public void setToken(String token) 			{ this.token = token; }
 	public boolean isConnected() 				{ return isConnected; }
 	public void setConnected(boolean value) 	{ this.isConnected = value; }
+	public List<Category> getCategorieList() 	{ return categorieList; }
+	public void setCategorieList(List<Category> categorieList) { this.categorieList = categorieList; }
 }
