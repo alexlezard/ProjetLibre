@@ -18,7 +18,7 @@ import com.web.model.Session;
 import com.web.model.User;
 
 @Controller
-public class UserController {
+public class UserController extends MasterController{
 	
 	private static final String URL_GETUSERINFO 	= "/user";
 	private static final String URL_CREATEUSER 		= "/users";
@@ -44,7 +44,7 @@ public class UserController {
 	// en option : avec un token, date d'expiration du token
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = URL_LOGIN, method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody Response Login(@RequestBody User userBody) {
+	public @ResponseBody Response login(@RequestBody User userBody) {
 		Response r 	 = new Response();
 		String email =  userBody.getEmail();
 		

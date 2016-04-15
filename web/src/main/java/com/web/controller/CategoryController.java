@@ -1,5 +1,9 @@
 package com.web.controller;
 
+import java.util.List;
+
+import org.json.JSONArray;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,9 +21,10 @@ import com.web.model.Session;
 import com.web.model.User;
 
 @Controller
-public class CategoryController {
+public class CategoryController extends MasterController{
 	
 	private static final String URL_GETUSERCATEGORIES 	= "/categories";
+	private static final String URL_CATEGORY 		= "/category";
 	private static final String URL_GETLISTS 		= "/categories/{categoryId}/lists";
 	private static final String URL_GETTASKS 		= "/lists/{listId}/tasks";
 	
@@ -38,10 +43,10 @@ public class CategoryController {
 		if (userid>0) {
 			CategoryDao dao = new CategoryDao();
 			
-			u.setCategorieList(dao.getAllCategories(userid));
-			
+			//u.setCategorieList(dao.getAllCategories(userid));
+			u.setCategorieListJson(dao.getAllCategories(userid));
 			r.setStatus("OK");
-			r.setData(u.getCategorieList());
+			r.setData(u.getCategorieListJson().toString());
 			r.setMessage("list of categories");
 		} else {
 			
@@ -51,5 +56,51 @@ public class CategoryController {
 		}
 		return r;
 	}
+	
+	// exemple : {"name":"Boire"}
+	@CrossOrigin(origins = "*")
+	@RequestMapping(value = URL_CATEGORY, method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody Response createCategory(@RequestBody Category cat) {
+		Response r 	= new Response();
+		int userId  = Session.getInstance().getUser().getId();
+		
+		if (cat!=null && cat.getName()!=null && userId>0) {
+			CategoryDao dao = new CategoryDao();
+			JSONArray jsonArr = (JSONArray) dao.create(cat);;
+			r.setStatus("OK");
+			r.setData(jsonArr.toString());
+			r.setMessage("A new category has been successfully inserted !");
+		}else
+			r.setMessage("KO");
+		
+		return r;
+	}
+	
+	
+	@CrossOrigin(origins = "*")
+	@RequestMapping(value = URL_CATEGORY, method = RequestMethod.PUT, produces = "application/json")
+	public @ResponseBody Response updateCategory(@RequestBody Category cat) {
+		Response r 	= new Response();
+		
+		int userId = Session.getInstance().getUser().getId();
+		
+		if (cat!=null && cat.getName()!=null && userId>0) {
+			CategoryDao dao = new CategoryDao();
+			JSONArray jsonArr = (JSONArray) dao.updateCategory(cat);
+			r.setStatus("OK");
+			r.setData(jsonArr.toString());
+			r.setMessage("Category well updated");
+			
+		}else
+			r.setMessage("KO");
+		
+		
+		return r;
+	}
+	
+	
+	
+	
+	
 	
 }

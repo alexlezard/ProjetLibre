@@ -1,14 +1,5 @@
 package com.web.model;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.web.controller.UserController;
-import com.web.dao.UserDao;
-import com.web.helper.CommonHelper;
-
 public class Response {
 	
 	public String status;
@@ -18,8 +9,6 @@ public class Response {
 	public Response(){
 		
 	}
-	
-	
 	
 	/*******************************
 	 ******* GETTER & SETTER *******

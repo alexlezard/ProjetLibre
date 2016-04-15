@@ -2,9 +2,9 @@ package com.web.model;
 
 import java.util.List;
 
+import org.json.JSONArray;
+
 public class User {
-	
-	//private static User user;
 	
 	private int id;
 	private String userName;
@@ -14,16 +14,11 @@ public class User {
 	private boolean isConnected = false;
 	
 	private List<Category> categorieList;
-	
+	public JSONArray categorieListJson;
+
 	public User(){
-		System.out.println( "User class id "+getId());
+		
 	}
-	
-//	public static synchronized User getInstance( ) {
-//		      if (user == null)
-//		          user =new User();
-//		      return user;
-//	}
 	
 	/*********************
 	 ** GETTER & SETTER ** 
@@ -43,4 +38,10 @@ public class User {
 	public void setConnected(boolean value) 	{ this.isConnected = value; }
 	public List<Category> getCategorieList() 	{ return categorieList; }
 	public void setCategorieList(List<Category> categorieList) { this.categorieList = categorieList; }
+	public JSONArray getCategorieListJson() {
+		return categorieListJson;
+	}
+	public void setCategorieListJson(JSONArray categorieListJson) {
+		this.categorieListJson = categorieListJson;
+	}
 }

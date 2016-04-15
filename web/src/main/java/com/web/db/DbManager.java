@@ -1,5 +1,6 @@
 package com.web.db;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -11,9 +12,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.helper.CommonHelper;
 import com.web.model.Category;
 import com.web.model.Liste;
+import com.web.model.Session;
 import com.web.model.User;
 
 public class DbManager {
@@ -150,75 +158,102 @@ public class DbManager {
 		return false;
 	}
 	
-	/***********************************
-	 ************* CATEGORY ************
+	/************************************
+	 ************* CATEGORY *************
 	 ***********************************/
 	
-	public List getAllUserCategory( int userID ) {
+	public JSONArray getAllUserCategories() {
 		String sql = "SELECT * FROM category WHERE user_iduser = ?";
-		ArrayList list = new ArrayList();
+		JSONArray list = new JSONArray();
+		int userId = Session.getInstance().getUser().getId();
 		try {
 			myConnect 			= getDBConnection();
 			myPreparedStatement = myConnect.prepareStatement(sql);
-			myPreparedStatement.setInt(1, userID);
-			myResultSet = myPreparedStatement.executeQuery();
-
-//			if (rs.first())
-//				return true;
+			myPreparedStatement.setInt(1, userId);
 			
-			while (myResultSet.next()) //incremente aussi l'index pour la lecture des données
-			{
-				list.add(myResultSet.getString("name"));
+			myResultSet = myPreparedStatement.executeQuery();
+			
+			while (myResultSet.next()) {
+				JSONObject obj = new JSONObject();
+				try {
+					obj.put("idcategory", myResultSet.getString("idcategory"));
+					obj.put("name", myResultSet.getString("name"));
+				} catch (JSONException e) { e.printStackTrace(); }
+				list.put(obj);
 			}
-		} 
-		catch (SQLException e) { e.printStackTrace(); }
-		
+		} catch (SQLException e) { e.printStackTrace(); }
+		System.out.println(" list cat "+list);
 		return list;
-		
 	}
 	
-	public boolean InsertCategory(Category cat) {
+	public JSONArray getCategory( String catName ) {
+		String sql = "SELECT category.idcategory, category.name FROM category WHERE user_iduser = ? AND category.name like ?";
+		JSONArray list = new JSONArray();
+		int userId = Session.getInstance().getUser().getId();
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			myPreparedStatement.setInt(1, userId);
+			myPreparedStatement.setString(2, catName);
+			
+			myResultSet = myPreparedStatement.executeQuery();
+			
+			if (myResultSet.first()) {
+				JSONObject obj = new JSONObject();
+				try {
+					obj.put("idcategory", myResultSet.getString("idcategory"));
+					obj.put("name", myResultSet.getString("name"));
+				} catch (JSONException e) { e.printStackTrace(); }
+				list.put(obj);
+			}
+		} catch (SQLException e) { e.printStackTrace(); }
+		System.out.println(" list cat "+list);
+		return list;
+	}
+	
+	public JSONArray InsertCategory(Category cat) {
 		String sql = "INSERT INTO category VALUES (NULL,?,?)";
-		
+		int userId = Session.getInstance().getUser().getId();
 		try {
 			myConnect 			= getDBConnection();
 			myPreparedStatement = myConnect.prepareStatement(sql);
 			
 			myPreparedStatement.setString(1, cat.getName());
-			myPreparedStatement.setInt(2, cat.getIdUser());
-			
+			myPreparedStatement.setInt(2, userId);
+			System.out.println(" cat "+cat.getUser_iduser());
 			int rowsInserted = myPreparedStatement.executeUpdate();
 			if (rowsInserted > 0) {
 			    System.out.println("A new category has been inserted successfully!");
-			    return true;
+			    return getCategory(cat.getName());
 			}
 		}
 		catch (SQLException e) { System.out.println(e.getMessage());}
 		
 		System.out.println("category has not been Inserted !");
-		return false;
+		return null;
 	}
 	
-	public boolean UpdateCategory(Category cat) {
+	public JSONArray UpdateCategory(Category cat) {
 		String sql = "UPDATE category SET name = ? WHERE idcategory = ? AND user_iduser = ?";
+		int userId = Session.getInstance().getUser().getId();
 		try {
 			myConnect 			= getDBConnection();
 			myPreparedStatement = myConnect.prepareStatement(sql);
 			
 			myPreparedStatement.setString(1, cat.getName());
-			myPreparedStatement.setInt(2, cat.getId());
-			myPreparedStatement.setInt(3, cat.getIdUser());
+			myPreparedStatement.setInt(2, cat.getIdcategory());
+			myPreparedStatement.setInt(3, userId);
 			
 			int rowsInserted = myPreparedStatement.executeUpdate();
 			if (rowsInserted > 0) {
 			    System.out.println("A new category has been updated successfully!");
-			    return true;
+			    return getCategory(cat.getName());
 			}
 		}
 		catch (SQLException e) { System.out.println(e.getMessage());}
 		
 		System.out.println("category has not been Update !");
-		return false;
+		return null;
 	}
 	
 	/***********************************

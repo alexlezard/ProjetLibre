@@ -1,5 +1,5 @@
 package com.web.controller;
 
-public class TaskController {
+public class TaskController extends MasterController{
 
 }

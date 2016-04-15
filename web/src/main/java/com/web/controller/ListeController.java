@@ -1,5 +1,5 @@
 package com.web.controller;
 
-public class ListeController{
+public class ListeController extends MasterController{
 
 }
