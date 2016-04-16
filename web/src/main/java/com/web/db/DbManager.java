@@ -211,7 +211,7 @@ public class DbManager {
 		return list;
 	}
 	
-	public JSONArray InsertCategory(Category cat) {
+	public JSONArray sqlInsertCategory(Category cat) {
 		String sql = "INSERT INTO category VALUES (NULL,?,?)";
 		int userId = Session.getInstance().getUser().getId();
 		try {
@@ -233,7 +233,7 @@ public class DbManager {
 		return null;
 	}
 	
-	public JSONArray UpdateCategory(Category cat) {
+	public JSONArray sqlUpdateCategory(Category cat) {
 		String sql = "UPDATE category SET name = ? WHERE idcategory = ? AND user_iduser = ?";
 		int userId = Session.getInstance().getUser().getId();
 		try {
@@ -253,6 +253,36 @@ public class DbManager {
 		catch (SQLException e) { System.out.println(e.getMessage());}
 		
 		System.out.println("category has not been Update !");
+		return null;
+	}
+	
+	public JSONArray sqlDeleteCategory(Category cat) {
+		String sql = "DELETE FROM category WHERE idcategory = ? AND user_iduser = ?";
+		int userId = Session.getInstance().getUser().getId();
+		String nameCat = cat.getName();
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setInt(1, cat.getIdcategory());
+			myPreparedStatement.setInt(2, userId);
+			
+			int rowsInserted = myPreparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+				JSONArray list = new JSONArray();
+				JSONObject obj = new JSONObject();
+				try {
+					obj.put( "name",nameCat);
+				} catch (JSONException e) { e.printStackTrace(); }
+				
+				list.put(obj);
+			    System.out.println("A new category has been delete successfully!");
+			    return list;
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		
+		System.out.println("category has not been delete !");
 		return null;
 	}
 	

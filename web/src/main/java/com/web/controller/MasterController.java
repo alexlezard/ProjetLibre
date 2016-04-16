@@ -14,7 +14,5 @@ public class MasterController {
 			System.out.println("You are connected");
 		}
 	}
-	
-	
-	
+
 }

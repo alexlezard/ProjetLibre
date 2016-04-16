@@ -98,6 +98,25 @@ public class CategoryController extends MasterController{
 		return r;
 	}
 	
+	@CrossOrigin(origins = "*")
+	@RequestMapping(value = URL_CATEGORY, method = RequestMethod.DELETE, produces = "application/json")
+	public @ResponseBody Response deleteCategory(@RequestBody Category cat) {
+		Response r 	= new Response();
+		int userId = (Session.getInstance()!=null && Session.getInstance().getUser()!=null)? Session.getInstance().getUser().getId():-1;
+		
+		if (cat!=null && cat.getIdcategory()>0 && userId>0) {
+			CategoryDao dao = new CategoryDao();
+			JSONArray jsonArr = (JSONArray) dao.deleteDao(cat);
+			r.setStatus("OK");
+			r.setData(jsonArr.toString());
+			r.setMessage("Category well deleted");
+			
+		}else
+			r.setMessage("KO");
+		
+		
+		return r;
+	}
 	
 	
 	
