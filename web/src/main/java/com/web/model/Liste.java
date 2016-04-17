@@ -6,10 +6,10 @@ import com.web.dao.InterfaceDao;
 
 public class Liste{
 
-	private int id;
+	private int idlist;
 	private String name;
 	private String description;
-	private int idCatedory;
+	private int category_idcategory;
 	
 	private List<Task> taskList;
 	
@@ -17,21 +17,14 @@ public class Liste{
 		
 	}
 	
-	
 	/*******************************
 	 ******* GETTER & SETTER *******
 	 * *****************************/
-	public int getId() {
-		return id;
+	public int getIdlist() {
+		return idlist;
 	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public int getIdCatedory() {
-		return idCatedory;
-	}
-	public void setIdCatedory(int idCatedory) {
-		this.idCatedory = idCatedory;
+	public void setIdlist(int idlist) {
+		this.idlist = idlist;
 	}
 	public String getName() {
 		return name;
@@ -50,5 +43,11 @@ public class Liste{
 	}
 	public void setTaskList(List<Task> taskList) {
 		this.taskList = taskList;
+	}
+	public int getCategory_idcategory() {
+		return category_idcategory;
+	}
+	public void setCategory_idcategory(int category_idcategory) {
+		this.category_idcategory = category_idcategory;
 	}
 }

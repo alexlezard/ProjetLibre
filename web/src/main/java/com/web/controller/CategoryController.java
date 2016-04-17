@@ -39,17 +39,13 @@ public class CategoryController extends MasterController{
 		User u = Session.getInstance().getUser();
 		int userid 	= u.getId();
 		
-		System.out.println( " userid "+userid);
 		if (userid>0) {
 			CategoryDao dao = new CategoryDao();
-			
-			//u.setCategorieList(dao.getAllCategories(userid));
 			u.setCategorieListJson(dao.getAllCategories(userid));
 			r.setStatus("OK");
 			r.setData(u.getCategorieListJson().toString());
 			r.setMessage("list of categories");
 		} else {
-			
 			r.setStatus("KO");
 			r.setMessage("Something went wrong !");
 			r.setData(null);

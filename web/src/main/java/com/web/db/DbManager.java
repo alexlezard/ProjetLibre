@@ -290,28 +290,145 @@ public class DbManager {
 	 ************* LIST ****************
 	 ***********************************/
 	
-	public boolean InsertList(Liste list) {
-		String sql = "INSERT INTO list VALUES (NULL,?,?,?)";
-		
+	public JSONArray sqlGetAllList(int id) {
+		String sql = "SELECT * FROM list WHERE category_idcategory = ?";
+		JSONArray resulList = new JSONArray();
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setInt(1, id);
+			
+			myResultSet = myPreparedStatement.executeQuery();
+			
+			while (myResultSet.next()) {
+				JSONObject obj = new JSONObject();
+				try {
+					obj.put("idlist", myResultSet.getInt("idlist"));
+					obj.put("name", myResultSet.getString("name"));
+					obj.put("description", myResultSet.getString("description"));
+					obj.put("idcategory", myResultSet.getInt("category_idcategory"));
+				} catch (JSONException e) { e.printStackTrace(); }
+				resulList.put(obj);
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}		
+		return resulList;
+	}
+	
+	public JSONArray sqlGetList(Liste list) {
+		String sql = "SELECT * FROM list WHERE name = ? AND category_idcategory = ?";
+		JSONArray resulList = new JSONArray();
 		try {
 			myConnect 			= getDBConnection();
 			myPreparedStatement = myConnect.prepareStatement(sql);
 			
 			myPreparedStatement.setString(1, list.getName());
-			myPreparedStatement.setString(2, list.getDescription());
-			myPreparedStatement.setInt(3, list.getIdCatedory());
+			myPreparedStatement.setInt(2, list.getCategory_idcategory());
+			
+			myResultSet = myPreparedStatement.executeQuery();
+			
+			if (myResultSet.first()) {
+				JSONObject obj = new JSONObject();
+				try {
+					obj.put("idcategory", myResultSet.getString("idlist"));
+					obj.put("name", myResultSet.getString("name"));
+					obj.put("description", myResultSet.getString("description"));
+					obj.put("idcategory", myResultSet.getInt("category_idcategory"));
+				} catch (JSONException e) { e.printStackTrace(); }
+				resulList.put(obj);
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}		
+		return resulList;
+	}
+	
+	public JSONArray sqlInsertList(Liste list) {
+		String sql = "INSERT INTO list VALUES (NULL,?,?,?)";
+		JSONArray resulList = new JSONArray();
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setString( 1, 	list.getName()					);
+			myPreparedStatement.setString( 2, 	list.getDescription()			);
+			myPreparedStatement.setInt(	   3,	list.getCategory_idcategory()	);
 			
 			int rowsInserted = myPreparedStatement.executeUpdate();
 			if (rowsInserted > 0) {
 			    System.out.println("A new list has been inserted successfully!");
-			    return true;
+			    return sqlGetList(list);
+			}
+		}
+		catch (SQLException e) 
+		{ System.out.println(e.getMessage());
+			System.out.println("list has not been Inserted !"); 
+			return resulList; }
+		
+		System.out.println("list has not been Inserted !");
+		return resulList;
+	}
+	
+	public JSONArray sqlUpdateList(Liste lst) {
+		String sql = "UPDATE list SET name = ?, description = ? WHERE idlist = ? AND category_idcategory = ?";
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setString(	1, 	lst.getName()					);
+			myPreparedStatement.setString(	2, 	lst.getDescription()			);
+			myPreparedStatement.setInt(		3, 	lst.getIdlist()					);
+			myPreparedStatement.setInt(		4, 	lst.getCategory_idcategory()	);
+			
+			int rowsInserted = myPreparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+			    System.out.println("A new list has been updated successfully!");
+			    return sqlGetList(lst);
 			}
 		}
 		catch (SQLException e) { System.out.println(e.getMessage());}
 		
-		System.out.println("category has not been Inserted !");
-		return false;
+		System.out.println("a list has not been Update !");
+		return null;
 	}
+	
+	public JSONArray sqlDeleteList(Liste lst) {
+		String sql = "DELETE FROM List WHERE idlist = ? AND category_idcategory = ?";
+		JSONArray resulList = new JSONArray();
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setInt(1, lst.getIdlist());
+			myPreparedStatement.setInt(2, lst.getCategory_idcategory());
+			
+			int rowsInserted = myPreparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+				JSONObject obj = new JSONObject();
+				try {
+					obj.put( "idlist",lst.getIdlist());
+					obj.put( "name",lst.getName());
+					obj.put( "idcategory",lst.getCategory_idcategory());
+				} catch (JSONException e) { e.printStackTrace(); }
+				
+				resulList.put(obj);
+			    System.out.println("A new category has been delete successfully!");
+			    return resulList;
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		
+		System.out.println("category has not been delete !");
+		return resulList;
+	}
+	
+	/***********************************
+	 ************* TASK  ***************
+	 ***********************************/
+	
+	
+	
+	
 	
 	/***********************************
 	 ************* TEST  ***************
