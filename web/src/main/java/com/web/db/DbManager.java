@@ -22,6 +22,7 @@ import com.web.helper.CommonHelper;
 import com.web.model.Category;
 import com.web.model.Liste;
 import com.web.model.Session;
+import com.web.model.Task;
 import com.web.model.User;
 
 public class DbManager {
@@ -426,8 +427,137 @@ public class DbManager {
 	 ************* TASK  ***************
 	 ***********************************/
 	
+	public JSONArray sqlGetAllTasks(int id) {
+		String sql = "SELECT * FROM task WHERE list_idlist = ?";
+		JSONArray resulList = new JSONArray();
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setInt(1, id);
+			
+			myResultSet = myPreparedStatement.executeQuery();
+			
+			while (myResultSet.next()) {
+				JSONObject obj = new JSONObject();
+				try {
+					obj.put("idtask", myResultSet.getInt("idtask"));
+					obj.put("name", myResultSet.getString("name"));
+					obj.put("description", myResultSet.getString("description"));
+					obj.put("list_idlist", myResultSet.getInt("list_idlist"));
+				} catch (JSONException e) { e.printStackTrace(); }
+				resulList.put(obj);
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}		
+		return resulList;
+	}
 	
+	public JSONArray sqlGetTask(Task task) {
+		String sql = "SELECT * FROM task WHERE name = ? AND list_idlist = ?";
+		JSONArray resulList = new JSONArray();
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setString(1, task.getName());
+			myPreparedStatement.setInt(2, task.getList_idlist());
+			
+			myResultSet = myPreparedStatement.executeQuery();
+			
+			if (myResultSet.first()) {
+				JSONObject obj = new JSONObject();
+				try {
+					obj.put("idtask", myResultSet.getInt("idtask"));
+					obj.put("name", myResultSet.getString("name"));
+					obj.put("description", myResultSet.getString("description"));
+					obj.put("list_idlist", myResultSet.getInt("list_idlist"));
+				} catch (JSONException e) { e.printStackTrace(); }
+				resulList.put(obj);
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}		
+		return resulList;
+	}
 	
+	public JSONArray sqlInsertTask(Task task) {
+		String sql = "INSERT INTO task VALUES (NULL,?,?,?)";
+		JSONArray resulList = new JSONArray();
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setString( 1, 	task.getName()					);
+			myPreparedStatement.setString( 2, 	task.getDescription()			);
+			myPreparedStatement.setInt(	   3,	task.getList_idlist()			);
+			
+			int rowsInserted = myPreparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+			    System.out.println("A new task has been inserted successfully!");
+			    return sqlGetTask(task);
+			}
+		}
+		catch (SQLException e) 
+		{ System.out.println(e.getMessage());
+			System.out.println("task has not been Inserted !"); 
+			return resulList; }
+		
+		System.out.println("task has not been Inserted !");
+		return resulList;
+	}
+	
+	public JSONArray sqlUpdateTask(Task task) {
+		String sql = "UPDATE task SET name = ?, description = ? WHERE idtask = ? AND list_idlist = ?";
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setString(	1, 	task.getName()			);
+			myPreparedStatement.setString(	2, 	task.getDescription()	);
+			myPreparedStatement.setInt(		3, 	task.getIdtask()		);
+			myPreparedStatement.setInt(		4, 	task.getList_idlist()	);
+			
+			int rowsInserted = myPreparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+			    System.out.println("A new list has been updated successfully!");
+			    return sqlGetTask(task);
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		
+		System.out.println("a list has not been Update !");
+		return null;
+	}
+	
+	public JSONArray sqlDeleteTask(Task task) {
+		String sql = "DELETE FROM task WHERE idtask = ? AND list_idlist = ?";
+		JSONArray resulList = new JSONArray();
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			
+			myPreparedStatement.setInt(1, task.getIdtask()		);
+			myPreparedStatement.setInt(2, task.getList_idlist()	);
+			
+			int rowsInserted = myPreparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+				JSONObject obj = new JSONObject();
+				try {
+					obj.put( "idtask",		task.getIdtask()		);
+					obj.put( "name",		task.getName()			);
+					obj.put( "task_idtask",	task.getList_idlist()	);
+				} catch (JSONException e) { e.printStackTrace(); }
+				
+				resulList.put(obj);
+			    System.out.println("A new category has been delete successfully!");
+			    return resulList;
+			}
+		}
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		
+		System.out.println("category has not been delete !");
+		return resulList;
+	}
 	
 	
 	/***********************************
