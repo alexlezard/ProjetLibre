@@ -17,24 +17,15 @@ public class CategoryDao implements InterfaceDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public String insert(Object obj) {
-		return null;
-	}
 	
-	public JSONArray create(Object obj) {
+	@Override
+	public JSONArray createDao(Object obj) {
 		if (obj != null)
 			return DbManager.getInstance().sqlInsertCategory( (Category) obj );
 		return null;
 	}
 	
 	@Override
-	public String remove(Object obj) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public JSONArray deleteDao(Object obj) {
 		if (obj != null)
 			return DbManager.getInstance().sqlDeleteCategory( (Category) obj );
@@ -42,22 +33,16 @@ public class CategoryDao implements InterfaceDao {
 	}
 	
 	@Override
-	public String update(Object obj) {
-		// TODO Auto-generated method stub
+	public JSONArray updateDao(Object obj) {
+		if (obj != null)
+			return DbManager.getInstance().sqlUpdateCategory( (Category) obj );
 		return null;
 	}
-	
-	public Object updateCategory(Object obj) {
-		return DbManager.getInstance().sqlUpdateCategory( (Category) obj );
-	}
-	
-	public JSONArray getAllCategories(int id){
-		if (id>0){
-			return DbManager.getInstance().getAllUserCategories();
-		}
-		return null;
-	}
-	
-	
 
+	@Override
+	public JSONArray getAll(int id) {
+		if (id>0)
+			return DbManager.getInstance().getAllUserCategories(-1);
+		return null;
+	}
 }

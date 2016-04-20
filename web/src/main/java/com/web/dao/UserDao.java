@@ -1,61 +1,49 @@
 package com.web.dao;
 
-import java.sql.Connection;
 import java.sql.SQLException;
+
+import org.json.JSONArray;
 
 import com.web.db.DbManager;
 import com.web.model.User;
 
 public class UserDao implements InterfaceDao{
 	
-	public UserDao() {
-		
-	}
-	
 	public boolean insert(User userBody) {
-		return DbManager.getInstance().InsertUser(userBody);
-	}
-//	public User findById(Object email) {
-//		if ((String)email instanceof String){
-//				try { 
-//					return DbManager.getInstance().getUserFromTable(email);
-//				} catch (SQLException e) { e.printStackTrace();};
-//		}
-//		return null;
-//	}
-	
-	public String login(){
-		return null;
-	}
-	
-	public String logout(){
-		return null;
+		if (userBody !=null)
+			return DbManager.getInstance().InsertUser(userBody);
+		return false;
 	}
 
 	@Override
 	public Object findById(Object email) {
 		if ((String)email instanceof String){
 			try { 
-				return (User)DbManager.getInstance().getUser((String)email);
+				return DbManager.getInstance().getUser((String)email);
 			} catch (SQLException e) { e.printStackTrace();};
 		}
 		return null;
 	}
 
 	@Override
-	public String insert(Object obj) {
+	public JSONArray createDao(Object obj) {
+		return null;
+	}
+
+	@Override
+	public JSONArray deleteDao(Object obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String remove(Object obj) {
+	public JSONArray updateDao(Object obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String update(Object obj) {
+	public JSONArray getAll(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

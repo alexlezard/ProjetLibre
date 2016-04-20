@@ -1,6 +1,5 @@
 package com.web.db;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -104,6 +103,7 @@ public class DbManager {
 				user.setEmail(email);
 				user.setUserName(username);
 				user.setPassword(mdp);
+				//user.setCategorieList(getAllUserCategories(userid).toString());
 				
 			}
 		} 
@@ -163,10 +163,10 @@ public class DbManager {
 	 ************* CATEGORY *************
 	 ***********************************/
 	
-	public JSONArray getAllUserCategories() {
+	public JSONArray getAllUserCategories(int id) {
 		String sql = "SELECT * FROM category WHERE user_iduser = ?";
 		JSONArray list = new JSONArray();
-		int userId = Session.getInstance().getUser().getId();
+		int userId = (Session.getInstance().getUser()!=null && Session.getInstance().getUser().getId()>0)? Session.getInstance().getUser().getId():id;
 		try {
 			myConnect 			= getDBConnection();
 			myPreparedStatement = myConnect.prepareStatement(sql);
@@ -560,9 +560,11 @@ public class DbManager {
 	}
 	
 	
-	/***********************************
-	 ************* TEST  ***************
-	 ***********************************/
+	/************************************
+	 ************* TEST  ****************
+	 ************************************
+	 ************************************
+	 ************************************/
 	
 	/**
 	 * Fonction de test

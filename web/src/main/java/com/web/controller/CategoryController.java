@@ -25,8 +25,6 @@ public class CategoryController extends MasterController{
 	
 	private static final String URL_GETUSERCATEGORIES 	= "/categories";
 	private static final String URL_CATEGORY 		= "/category";
-	private static final String URL_GETLISTS 		= "/categories/{categoryId}/lists";
-	private static final String URL_GETTASKS 		= "/lists/{listId}/tasks";
 	
 	public CategoryController(){
 	
@@ -41,7 +39,7 @@ public class CategoryController extends MasterController{
 		
 		if (userid>0) {
 			CategoryDao dao = new CategoryDao();
-			u.setCategorieListJson(dao.getAllCategories(userid));
+			u.setCategorieListJson(dao.getAll(userid));
 			r.setStatus("OK");
 			r.setData(u.getCategorieListJson().toString());
 			r.setMessage("list of categories");
@@ -62,7 +60,7 @@ public class CategoryController extends MasterController{
 		
 		if (cat!=null && cat.getName()!=null && userId>0) {
 			CategoryDao dao = new CategoryDao();
-			JSONArray jsonArr = (JSONArray) dao.create(cat);;
+			JSONArray jsonArr = dao.createDao(cat);;
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("A new category has been successfully inserted !");
@@ -82,7 +80,7 @@ public class CategoryController extends MasterController{
 		
 		if (cat!=null && cat.getName()!=null && userId>0) {
 			CategoryDao dao = new CategoryDao();
-			JSONArray jsonArr = (JSONArray) dao.updateCategory(cat);
+			JSONArray jsonArr = (JSONArray) dao.updateDao(cat);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("Category well updated");
@@ -113,9 +111,5 @@ public class CategoryController extends MasterController{
 		
 		return r;
 	}
-	
-	
-	
-	
 	
 }

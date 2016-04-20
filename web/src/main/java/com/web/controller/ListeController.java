@@ -24,12 +24,7 @@ public class ListeController extends MasterController{
 	public ListeController(){
 		System.out.println("ListeController");
 	}
-	
-//	{
-//	    "name":"developper statemachine",
-//	    "description":"Developper une statemachine , voir tuto du super prof superman du java #Dim",
-//	    "idcategorie":8
-//	}
+
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = URL_LIST, method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody Response createlist(@RequestBody Liste lst) {
@@ -56,7 +51,7 @@ public class ListeController extends MasterController{
 		
 		if (idcategory>=0 && userId>=0) {
 			ListeDao dao = new ListeDao();
-			JSONArray jsonArr = (JSONArray) dao.getAllListe(idcategory);
+			JSONArray jsonArr = (JSONArray) dao.getAll(idcategory);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("You Got all List of task from category : "+idcategory);

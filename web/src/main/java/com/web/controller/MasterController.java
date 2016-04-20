@@ -1,13 +1,7 @@
 package com.web.controller;
 
-import org.springframework.stereotype.Controller;
-
-import com.web.dao.CategoryDao;
-import com.web.model.Response;
 import com.web.model.Session;
-import com.web.model.User;
 
-@Controller
 public class MasterController {
 	
 	boolean isConnected = false;
@@ -24,11 +18,10 @@ public class MasterController {
 		
 	}
 	
-	
 	/***********************************
 	 **********  GETTER & SETTER  ******
 	 ***********************************/
-	
+
 	public boolean isConnected() {
 		return isConnected;
 	}
