@@ -112,4 +112,25 @@ public class CategoryController extends MasterController{
 		return r;
 	}
 	
+	@RequestMapping(value = URL_GETUSERCATEGORIES+"/{idcategory}", method = RequestMethod.GET)
+	public @ResponseBody Response getCategory(@PathVariable int idcategory) {
+		Response r 	= new Response();
+		loader();
+		
+		if (isConnected) {
+			CategoryDao dao = new CategoryDao();
+			r.setStatus("OK");
+			r.setData(dao.findById(idcategory).toString());
+			r.setMessage("category "+idcategory);
+		} else if (!isConnected) {
+			r.setStatus("SESSION-EXPIRED");
+			r.setMessage(null);
+			r.setData(null);
+		} else {
+			r.setStatus("KO");
+			r.setMessage("Something went wrong !");
+			r.setData(null);
+		}
+		return r;
+	}
 }

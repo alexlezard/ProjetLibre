@@ -212,6 +212,31 @@ public class DbManager {
 		return list;
 	}
 	
+	public JSONArray sqlGetCategory( int id ) {
+		String sql = "SELECT category.idcategory, category.name FROM category WHERE user_iduser = ? AND category.idcategory = ?";
+		JSONArray list = new JSONArray();
+		int userId = Session.getInstance().getUser().getId();
+		try {
+			myConnect 			= getDBConnection();
+			myPreparedStatement = myConnect.prepareStatement(sql);
+			myPreparedStatement.setInt(1, userId);
+			myPreparedStatement.setInt(2, id);
+			
+			myResultSet = myPreparedStatement.executeQuery();
+			
+			if (myResultSet.first()) {
+				JSONObject obj = new JSONObject();
+				try {
+					obj.put("idcategory", myResultSet.getString("idcategory"));
+					obj.put("name", myResultSet.getString("name"));
+				} catch (JSONException e) { e.printStackTrace(); }
+				list.put(obj);
+			}
+		} catch (SQLException e) { e.printStackTrace(); }
+		System.out.println(" list cat "+list);
+		return list;
+	}
+	
 	public JSONArray sqlInsertCategory(Category cat) {
 		String sql = "INSERT INTO category VALUES (NULL,?,?)";
 		int userId = Session.getInstance().getUser().getId();

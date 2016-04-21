@@ -21,7 +21,7 @@ public class ListeController extends MasterController{
 	private static final String URL_LISTS	= "category/{idcategory}/lists";
 	
 	public ListeController(){
-		System.out.println("ListeController");
+		
 	}
 
 	@CrossOrigin(origins = "*")

@@ -14,7 +14,6 @@ public class CategoryDao implements InterfaceDao {
 	
 	@Override
 	public Object findById(Object obj) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
@@ -43,6 +42,12 @@ public class CategoryDao implements InterfaceDao {
 	public JSONArray getAll(int id) {
 		if (id>0)
 			return DbManager.getInstance().getAllUserCategories(-1);
+		return null;
+	}
+	
+	public JSONArray findById(int id) {
+		if (id>0)
+			return DbManager.getInstance().sqlGetCategory(id);
 		return null;
 	}
 }
