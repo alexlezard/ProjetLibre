@@ -21,7 +21,7 @@ import com.web.model.User;
 public class CategoryController extends MasterController{
 	
 	private static final String URL_GETUSERCATEGORIES 	= "/categories";
-	private static final String URL_CATEGORY 		= "/category";
+	private static final String URL_CATEGORY 		= "/categories";
 	
 	public CategoryController(){
 		

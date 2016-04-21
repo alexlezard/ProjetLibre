@@ -7,6 +7,7 @@ public class Task{
 	private String name;
 	private String description;
 	private int list_idlist;
+	private int done;
 
 	public Task(){
 		
@@ -38,5 +39,11 @@ public class Task{
 	}
 	public void setList_idlist(int list_idlist) {
 		this.list_idlist = list_idlist;
+	}
+	public int getDone() {
+		return done;
+	}
+	public void setDone(int done) {
+		this.done = done;
 	}
 }

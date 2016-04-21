@@ -16,8 +16,8 @@ import com.web.model.Response;
 @Controller
 public class ListeController extends MasterController{
 	
-	private static final String URL_LIST	= "/list";
-	private static final String URL_LISTS	= "category/{idcategory}/lists";
+	private static final String URL_LIST	= "/lists";
+	private static final String URL_LISTS	= "categories/{idcategory}/lists";
 	
 	public ListeController(){
 		
@@ -34,7 +34,7 @@ public class ListeController extends MasterController{
 			JSONArray jsonArr = (JSONArray) dao.createDao(lst);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
-			r.setMessage("A new category has been successfully inserted !");
+			r.setMessage("A new list has been successfully inserted !");
 		}else if (!isConnected) {
 			return getResponseNotConnected(isConnected);
 		}
@@ -70,7 +70,7 @@ public class ListeController extends MasterController{
 			JSONArray jsonArr = (JSONArray) dao.updateDao(lst);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
-			r.setMessage("A new category has been successfully updated !");
+			r.setMessage("A new list has been successfully updated !");
 		}else if (!isConnected) {
 			return getResponseNotConnected(isConnected);
 		}
@@ -88,7 +88,7 @@ public class ListeController extends MasterController{
 			JSONArray jsonArr = (JSONArray) dao.deleteDao(lst);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
-			r.setMessage("A new category has been successfully updated !");
+			r.setMessage("A new list has been successfully deleted !");
 		}else if (!isConnected) {
 			return getResponseNotConnected(isConnected);
 		}

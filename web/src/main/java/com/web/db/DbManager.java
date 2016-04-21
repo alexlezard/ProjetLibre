@@ -357,10 +357,10 @@ public class DbManager {
 			if (myResultSet.first()) {
 				JSONObject obj = new JSONObject();
 				try {
-					obj.put("idcategory", myResultSet.getString("idlist"));
+					obj.put("idlist", myResultSet.getInt("idlist"));
 					obj.put("name", myResultSet.getString("name"));
-					obj.put("description", myResultSet.getString("description"));
-					obj.put("idcategory", myResultSet.getInt("category_idcategory"));
+					//obj.put("description", myResultSet.getString("description"));
+					obj.put("category_idcategory", myResultSet.getInt("category_idcategory"));
 				} catch (JSONException e) { e.printStackTrace(); }
 				resulList.put(obj);
 			}
@@ -470,6 +470,7 @@ public class DbManager {
 					obj.put("name", myResultSet.getString("name"));
 					obj.put("description", myResultSet.getString("description"));
 					obj.put("list_idlist", myResultSet.getInt("list_idlist"));
+					obj.put("done", myResultSet.getInt("done"));
 				} catch (JSONException e) { e.printStackTrace(); }
 				resulList.put(obj);
 			}
@@ -497,6 +498,7 @@ public class DbManager {
 					obj.put("name", myResultSet.getString("name"));
 					obj.put("description", myResultSet.getString("description"));
 					obj.put("list_idlist", myResultSet.getInt("list_idlist"));
+					obj.put("done", myResultSet.getInt("done"));
 				} catch (JSONException e) { e.printStackTrace(); }
 				resulList.put(obj);
 			}
@@ -506,7 +508,7 @@ public class DbManager {
 	}
 	
 	public JSONArray sqlInsertTask(Task task) {
-		String sql = "INSERT INTO task VALUES (NULL,?,?,?)";
+		String sql = "INSERT INTO task VALUES (NULL,?,?,?,?)";
 		JSONArray resulList = new JSONArray();
 		try {
 			myConnect 			= getDBConnection();
@@ -515,6 +517,7 @@ public class DbManager {
 			myPreparedStatement.setString( 1, 	task.getName()					);
 			myPreparedStatement.setString( 2, 	task.getDescription()			);
 			myPreparedStatement.setInt(	   3,	task.getList_idlist()			);
+			myPreparedStatement.setInt(	   4,	task.getDone()			);
 			
 			int rowsInserted = myPreparedStatement.executeUpdate();
 			if (rowsInserted > 0) {
@@ -532,15 +535,16 @@ public class DbManager {
 	}
 	
 	public JSONArray sqlUpdateTask(Task task) {
-		String sql = "UPDATE task SET name = ?, description = ? WHERE idtask = ? AND list_idlist = ?";
+		String sql = "UPDATE task SET name = ?, description = ?, done = ? WHERE idtask = ? AND list_idlist = ?";
 		try {
 			myConnect 			= getDBConnection();
 			myPreparedStatement = myConnect.prepareStatement(sql);
 			
 			myPreparedStatement.setString(	1, 	task.getName()			);
 			myPreparedStatement.setString(	2, 	task.getDescription()	);
-			myPreparedStatement.setInt(		3, 	task.getIdtask()		);
-			myPreparedStatement.setInt(		4, 	task.getList_idlist()	);
+			myPreparedStatement.setInt(		3, 	task.getDone()	);
+			myPreparedStatement.setInt(		4, 	task.getIdtask()		);
+			myPreparedStatement.setInt(		5, 	task.getList_idlist()	);
 			
 			int rowsInserted = myPreparedStatement.executeUpdate();
 			if (rowsInserted > 0) {

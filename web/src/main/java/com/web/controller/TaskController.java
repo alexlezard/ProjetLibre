@@ -16,7 +16,7 @@ import com.web.model.Task;
 @Controller
 public class TaskController extends MasterController{
 	
-	private static final String URL_TASK		= "/task";
+	private static final String URL_TASK		= "/tasks";
 	private static final String URL_GETTASKS 	= "/lists/{idlist}/tasks";
 	
 	@CrossOrigin(origins = "*")
