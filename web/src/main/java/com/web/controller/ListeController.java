@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.web.dao.ListeDao;
@@ -19,7 +18,7 @@ import com.web.model.Session;
 public class ListeController extends MasterController{
 	
 	private static final String URL_LIST	= "/list";
-	private static final String URL_LISTS	= "category/{idcategory}/lists/";
+	private static final String URL_LISTS	= "category/{idcategory}/lists";
 	
 	public ListeController(){
 		System.out.println("ListeController");
