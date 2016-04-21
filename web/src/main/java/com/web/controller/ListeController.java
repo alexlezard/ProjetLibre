@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.web.dao.ListeDao;
 import com.web.model.Liste;
 import com.web.model.Response;
-import com.web.model.Session;
 
 @Controller
 public class ListeController extends MasterController{
@@ -28,17 +27,17 @@ public class ListeController extends MasterController{
 	@RequestMapping(value = URL_LIST, method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody Response createlist(@RequestBody Liste lst) {
 		Response r 	= new Response();
-		int userId  = Session.getInstance().getUser().getId();
+		loader();
 		
-		if (lst!=null && lst.getName()!=null && userId>0) {
+		if (lst!=null && lst.getName()!=null && isConnected) {
 			ListeDao dao = new ListeDao();
 			JSONArray jsonArr = (JSONArray) dao.createDao(lst);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("A new category has been successfully inserted !");
-		}else
-			r.setMessage("KO");
-		
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
+		}
 		return r;
 	}
 	
@@ -46,17 +45,17 @@ public class ListeController extends MasterController{
 	@RequestMapping(value = URL_LISTS, method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody Response getAllList(@PathVariable int idcategory) {
 		Response r 	= new Response();
-		int userId  = Session.getInstance().getUser().getId();
+		loader();
 		
-		if (idcategory>=0 && userId>=0) {
+		if (idcategory>=0 && isConnected) {
 			ListeDao dao = new ListeDao();
 			JSONArray jsonArr = (JSONArray) dao.getAll(idcategory);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("You Got all List of task from category : "+idcategory);
-		}else
-			r.setMessage("KO");
-		
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
+		}
 		return r;
 	}
 	
@@ -64,17 +63,17 @@ public class ListeController extends MasterController{
 	@RequestMapping(value = URL_LIST, method = RequestMethod.PUT, produces = "application/json")
 	public @ResponseBody Response updatelist(@RequestBody Liste lst) {
 		Response r 	= new Response();
-		int userId  = Session.getInstance().getUser().getId();
+		loader();
 		
-		if (lst!=null && lst.getName()!=null && userId>0) {
+		if (lst!=null && lst.getName()!=null && isConnected) {
 			ListeDao dao = new ListeDao();
 			JSONArray jsonArr = (JSONArray) dao.updateDao(lst);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("A new category has been successfully updated !");
-		}else
-			r.setMessage("KO");
-		
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
+		}
 		return r;
 	}
 	
@@ -82,17 +81,17 @@ public class ListeController extends MasterController{
 	@RequestMapping(value = URL_LIST, method = RequestMethod.DELETE, produces = "application/json")
 	public @ResponseBody Response deletelist(@RequestBody Liste lst) {
 		Response r 	= new Response();
-		int userId  = Session.getInstance().getUser().getId();
+		loader();
 		
-		if (lst!=null && lst.getName()!=null && lst.getIdlist()>0 && userId>0) {
+		if (lst!=null && lst.getName()!=null && lst.getIdlist()>0 && isConnected) {
 			ListeDao dao = new ListeDao();
 			JSONArray jsonArr = (JSONArray) dao.deleteDao(lst);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("A new category has been successfully updated !");
-		}else
-			r.setMessage("KO");
-		
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
+		}
 		return r;
 	}
 }

@@ -1,20 +1,17 @@
 package com.web.controller;
 
-import java.util.List;
 
 import org.json.JSONArray;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.web.dao.CategoryDao;
-import com.web.dao.UserDao;
-import com.web.helper.CommonHelper;
 import com.web.model.Category;
 import com.web.model.Response;
 import com.web.model.Session;
@@ -27,26 +24,24 @@ public class CategoryController extends MasterController{
 	private static final String URL_CATEGORY 		= "/category";
 	
 	public CategoryController(){
-	
+		
 	}
-	
+
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = URL_GETUSERCATEGORIES, method = RequestMethod.GET)
 	public @ResponseBody Response getCategories() {
 		Response r 	= new Response();
-		User u = Session.getInstance().getUser();
-		int userid 	= u.getId();
+		loader();
 		
-		if (userid>0) {
+		if (isConnected) {
+			User u = Session.getInstance().getUser();
 			CategoryDao dao = new CategoryDao();
-			u.setCategorieListJson(dao.getAll(userid));
+			u.setCategorieListJson(dao.getAll(getUserId()));
 			r.setStatus("OK");
 			r.setData(u.getCategorieListJson().toString());
 			r.setMessage("list of categories");
-		} else {
-			r.setStatus("KO");
-			r.setMessage("Something went wrong !");
-			r.setData(null);
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
 		}
 		return r;
 	}
@@ -56,7 +51,7 @@ public class CategoryController extends MasterController{
 	@RequestMapping(value = URL_CATEGORY, method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody Response createCategory(@RequestBody Category cat) {
 		Response r 	= new Response();
-		int userId  = Session.getInstance().getUser().getId();
+		loader();
 		
 		if (cat!=null && cat.getName()!=null && userId>0) {
 			CategoryDao dao = new CategoryDao();
@@ -64,9 +59,9 @@ public class CategoryController extends MasterController{
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("A new category has been successfully inserted !");
-		}else
-			r.setMessage("KO");
-		
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
+		}
 		return r;
 	}
 	
@@ -75,8 +70,7 @@ public class CategoryController extends MasterController{
 	@RequestMapping(value = URL_CATEGORY, method = RequestMethod.PUT, produces = "application/json")
 	public @ResponseBody Response updateCategory(@RequestBody Category cat) {
 		Response r 	= new Response();
-		
-		int userId = Session.getInstance().getUser().getId();
+		loader();
 		
 		if (cat!=null && cat.getName()!=null && userId>0) {
 			CategoryDao dao = new CategoryDao();
@@ -85,9 +79,9 @@ public class CategoryController extends MasterController{
 			r.setData(jsonArr.toString());
 			r.setMessage("Category well updated");
 			
-		}else
-			r.setMessage("KO");
-		
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
+		}
 		
 		return r;
 	}
@@ -96,7 +90,7 @@ public class CategoryController extends MasterController{
 	@RequestMapping(value = URL_CATEGORY, method = RequestMethod.DELETE, produces = "application/json")
 	public @ResponseBody Response deleteCategory(@RequestBody Category cat) {
 		Response r 	= new Response();
-		int userId = (Session.getInstance()!=null && Session.getInstance().getUser()!=null)? Session.getInstance().getUser().getId():-1;
+		loader();
 		
 		if (cat!=null && cat.getIdcategory()>0 && userId>0) {
 			CategoryDao dao = new CategoryDao();
@@ -104,14 +98,13 @@ public class CategoryController extends MasterController{
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("Category well deleted");
-			
-		}else
-			r.setMessage("KO");
-		
-		
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
+		}
 		return r;
 	}
 	
+	@CrossOrigin(origins = "*")
 	@RequestMapping(value = URL_GETUSERCATEGORIES+"/{idcategory}", method = RequestMethod.GET)
 	public @ResponseBody Response getCategory(@PathVariable int idcategory) {
 		Response r 	= new Response();
@@ -123,13 +116,7 @@ public class CategoryController extends MasterController{
 			r.setData(dao.findById(idcategory).toString());
 			r.setMessage("category "+idcategory);
 		} else if (!isConnected) {
-			r.setStatus("SESSION-EXPIRED");
-			r.setMessage(null);
-			r.setData(null);
-		} else {
-			r.setStatus("KO");
-			r.setMessage("Something went wrong !");
-			r.setData(null);
+			return getResponseNotConnected(isConnected);
 		}
 		return r;
 	}

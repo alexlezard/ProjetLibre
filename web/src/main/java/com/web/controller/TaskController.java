@@ -23,16 +23,17 @@ public class TaskController extends MasterController{
 	@RequestMapping(value = URL_TASK, method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody Response createTask(@RequestBody Task task) {
 		Response r 	= new Response();
+		loader();
 		
-		if (task!=null && task.getName()!=null) {
+		if (task!=null && task.getName()!=null && isConnected) {
 			TaskDao dao = new TaskDao();
 			JSONArray jsonArr = (JSONArray) dao.createDao(task);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("A new task has been successfully inserted !");
-		}else
-			r.setMessage("KO");
-		
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
+		}
 		return r;
 	}
 	
@@ -40,16 +41,17 @@ public class TaskController extends MasterController{
 	@RequestMapping(value = URL_GETTASKS, method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody Response getAllTasks(@PathVariable int idlist) {
 		Response r 	= new Response();
+		loader();
 		
-		if (idlist>=0) {
+		if (idlist>=0 && isConnected) {
 			TaskDao dao = new TaskDao();
 			JSONArray jsonArr = (JSONArray) dao.getAll(idlist);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("You Got all task of list : "+idlist);
-		}else
-			r.setMessage("KO");
-		
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
+		}
 		return r;
 	}
 	
@@ -57,16 +59,17 @@ public class TaskController extends MasterController{
 	@RequestMapping(value = URL_TASK, method = RequestMethod.PUT, produces = "application/json")
 	public @ResponseBody Response updateTask(@RequestBody Task task) {
 		Response r 	= new Response();
+		loader();
 		
-		if (task!=null && task.getName()!=null) {
+		if (task!=null && task.getName()!=null && isConnected) {
 			TaskDao dao = new TaskDao();
 			JSONArray jsonArr = (JSONArray) dao.updateDao(task);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("A new category has been successfully updated !");
-		}else
-			r.setMessage("KO");
-		
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
+		}
 		return r;
 	}
 	
@@ -74,16 +77,17 @@ public class TaskController extends MasterController{
 	@RequestMapping(value = URL_TASK, method = RequestMethod.DELETE, produces = "application/json")
 	public @ResponseBody Response deleteTask(@RequestBody Task task) {
 		Response r 	= new Response();
+		loader();
 		
-		if (task!=null && task.getName()!=null && task.getIdtask()>=0) {
+		if (task!=null && task.getName()!=null && task.getIdtask()>=0 && isConnected) {
 			TaskDao dao = new TaskDao();
 			JSONArray jsonArr = (JSONArray) dao.deleteDao(task);
 			r.setStatus("OK");
 			r.setData(jsonArr.toString());
 			r.setMessage("A new category has been successfully updated !");
-		}else
-			r.setMessage("KO");
-		
+		}else if (!isConnected) {
+			return getResponseNotConnected(isConnected);
+		}
 		return r;
 	}
 }
