@@ -73,6 +73,16 @@ public class DbManager {
 
 	}
 	
+	public void closer(){
+		if (myPreparedStatement != null) { 
+			try { myPreparedStatement.close(); } 
+			catch (SQLException e) { e.printStackTrace();} 
+		}
+		if (myConnect != null) { 
+			try { myConnect.close(); } 
+			catch (SQLException e) { e.printStackTrace();} 
+		}	
+	}
 	/***********************************
 	 ************* USER ************
 	 ***********************************/
@@ -108,8 +118,9 @@ public class DbManager {
 			}
 		} 
 		catch (SQLException e) { System.out.println(e.getMessage());} 
-		finally { 	if (myPreparedStatement != null) { myPreparedStatement.close(); }
-					if (myConnect != null) { myConnect.close(); }	
+		finally { 	
+			if (myPreparedStatement != null) { myPreparedStatement.close(); }
+			if (myConnect != null) { myConnect.close(); }	
 		}
 		
 		return user;
@@ -138,10 +149,13 @@ public class DbManager {
 			}
 		}
 		catch (SQLException e) { System.out.println(e.getMessage());}
+		finally { closer(); }
 		
 		System.out.println("user NOT Inserted !");
 		return false;
 	}
+	
+
 	
 	public boolean userExist(String email){
 		String selectSQL = "SELECT * FROM user WHERE email LIKE ?";
@@ -155,6 +169,7 @@ public class DbManager {
 				return true;
 		} 
 		catch (SQLException e) { e.printStackTrace(); }
+		finally { closer(); }
 		
 		return false;
 	}
@@ -183,6 +198,7 @@ public class DbManager {
 				list.put(obj);
 			}
 		} catch (SQLException e) { e.printStackTrace(); }
+		finally { closer(); }
 		System.out.println(" list cat "+list);
 		return list;
 	}
@@ -208,6 +224,7 @@ public class DbManager {
 				list.put(obj);
 			}
 		} catch (SQLException e) { e.printStackTrace(); }
+		finally { closer(); }
 		System.out.println(" list cat "+list);
 		return list;
 	}
@@ -233,6 +250,7 @@ public class DbManager {
 				list.put(obj);
 			}
 		} catch (SQLException e) { e.printStackTrace(); }
+		finally { closer(); }
 		System.out.println(" list cat "+list);
 		return list;
 	}
@@ -254,6 +272,7 @@ public class DbManager {
 			}
 		}
 		catch (SQLException e) { System.out.println(e.getMessage());}
+		finally { closer(); }
 		
 		System.out.println("category has not been Inserted !");
 		return null;
@@ -277,6 +296,7 @@ public class DbManager {
 			}
 		}
 		catch (SQLException e) { System.out.println(e.getMessage());}
+		finally { closer(); }
 		
 		System.out.println("category has not been Update !");
 		return null;
@@ -307,7 +327,7 @@ public class DbManager {
 			}
 		}
 		catch (SQLException e) { System.out.println(e.getMessage());}
-		
+		finally { closer(); }
 		System.out.println("category has not been delete !");
 		return null;
 	}
@@ -338,7 +358,8 @@ public class DbManager {
 				resulList.put(obj);
 			}
 		}
-		catch (SQLException e) { System.out.println(e.getMessage());}		
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		finally { closer(); }
 		return resulList;
 	}
 	
@@ -365,7 +386,8 @@ public class DbManager {
 				resulList.put(obj);
 			}
 		}
-		catch (SQLException e) { System.out.println(e.getMessage());}		
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		finally { closer(); }
 		return resulList;
 	}
 	
@@ -390,6 +412,7 @@ public class DbManager {
 		{ System.out.println(e.getMessage());
 			System.out.println("list has not been Inserted !"); 
 			return resulList; }
+		finally { closer(); }
 		
 		System.out.println("list has not been Inserted !");
 		return resulList;
@@ -413,6 +436,7 @@ public class DbManager {
 			}
 		}
 		catch (SQLException e) { System.out.println(e.getMessage());}
+		finally { closer(); }
 		
 		System.out.println("a list has not been Update !");
 		return null;
@@ -443,6 +467,7 @@ public class DbManager {
 			}
 		}
 		catch (SQLException e) { System.out.println(e.getMessage());}
+		finally { closer(); }
 		
 		System.out.println("category has not been delete !");
 		return resulList;
@@ -475,7 +500,8 @@ public class DbManager {
 				resulList.put(obj);
 			}
 		}
-		catch (SQLException e) { System.out.println(e.getMessage());}		
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		finally { closer(); }
 		return resulList;
 	}
 	
@@ -503,7 +529,8 @@ public class DbManager {
 				resulList.put(obj);
 			}
 		}
-		catch (SQLException e) { System.out.println(e.getMessage());}		
+		catch (SQLException e) { System.out.println(e.getMessage());}
+		finally { closer(); }
 		return resulList;
 	}
 	
@@ -514,9 +541,9 @@ public class DbManager {
 			myConnect 			= getDBConnection();
 			myPreparedStatement = myConnect.prepareStatement(sql);
 			
-			myPreparedStatement.setString( 1, 	task.getName()					);
-			myPreparedStatement.setString( 2, 	task.getDescription()			);
-			myPreparedStatement.setInt(	   3,	task.getList_idlist()			);
+			myPreparedStatement.setString( 1, 	task.getName()			);
+			myPreparedStatement.setString( 2, 	task.getDescription()	);
+			myPreparedStatement.setInt(	   3,	task.getList_idlist()	);
 			myPreparedStatement.setInt(	   4,	task.getDone()			);
 			
 			int rowsInserted = myPreparedStatement.executeUpdate();
@@ -529,6 +556,7 @@ public class DbManager {
 		{ System.out.println(e.getMessage());
 			System.out.println("task has not been Inserted !"); 
 			return resulList; }
+		finally { closer(); }
 		
 		System.out.println("task has not been Inserted !");
 		return resulList;
@@ -542,19 +570,20 @@ public class DbManager {
 			
 			myPreparedStatement.setString(	1, 	task.getName()			);
 			myPreparedStatement.setString(	2, 	task.getDescription()	);
-			myPreparedStatement.setInt(		3, 	task.getDone()	);
+			myPreparedStatement.setInt(		3, 	task.getDone()			);
 			myPreparedStatement.setInt(		4, 	task.getIdtask()		);
 			myPreparedStatement.setInt(		5, 	task.getList_idlist()	);
 			
 			int rowsInserted = myPreparedStatement.executeUpdate();
 			if (rowsInserted > 0) {
-			    System.out.println("A new list has been updated successfully!");
+			    System.out.println("A new task has been updated successfully!");
 			    return sqlGetTask(task);
 			}
 		}
 		catch (SQLException e) { System.out.println(e.getMessage());}
+		finally { closer(); }
 		
-		System.out.println("a list has not been Update !");
+		System.out.println("a task has not been Update !");
 		return null;
 	}
 	
@@ -574,18 +603,20 @@ public class DbManager {
 				try {
 					obj.put( "idtask",		task.getIdtask()		);
 					obj.put( "name",		task.getName()			);
-					obj.put( "task_idtask",	task.getList_idlist()	);
+					obj.put( "list_idlist",	task.getList_idlist()	);
 				} catch (JSONException e) { e.printStackTrace(); }
 				
 				resulList.put(obj);
-			    System.out.println("A new category has been delete successfully!");
+			    System.out.println("A new task has been delete successfully!");
 			    return resulList;
 			}
 		}
 		catch (SQLException e) { System.out.println(e.getMessage());}
+		finally { closer(); }
 		
-		System.out.println("category has not been delete !");
+		System.out.println("task has not been delete !");
 		return resulList;
+		
 	}
 	
 	
